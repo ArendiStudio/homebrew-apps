@@ -122,6 +122,14 @@ brew update
 brew upgrade arendistudio/apps/utlt
 ```
 
+If you tested `utlt` before the early-access tap history reset and Homebrew
+shows conflict markers in `Formula/utlt.rb`, repair the local tap checkout once:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ArendiStudio/homebrew-apps/main/scripts/repair-local-tap | bash
+brew upgrade arendistudio/apps/utlt
+```
+
 ### Upgrade packages
 
 ```bash

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+tap_name="arendistudio/apps"
+tap_url="https://github.com/ArendiStudio/homebrew-apps"
+default_prefix="/opt/homebrew"
+
+if ! command -v brew >/dev/null 2>&1; then
+  printf '%s\n' "Homebrew is not installed or is not on PATH."
+  exit 1
+fi
+
+tap_path="$(brew --repo "$tap_name" 2>/dev/null || true)"
+if [[ -z "$tap_path" ]]; then
+  prefix="$(brew --prefix 2>/dev/null || printf '%s' "$default_prefix")"
+  tap_path="${prefix}/Library/Taps/arendistudio/homebrew-apps"
+fi
+
+case "$tap_path" in
+  */Library/Taps/arendistudio/homebrew-apps) ;;
+  *)
+    printf 'Refusing to remove unexpected tap path: %s\n' "$tap_path"
+    exit 1
+    ;;
+esac
+
+brew untap --force "$tap_name" >/dev/null 2>&1 || true
+rm -rf "$tap_path"
+brew tap "$tap_name" "$tap_url"
+brew trust --tap "$tap_name"
+
+printf '%s\n' "Repaired ${tap_name}."
+printf '%s\n' "Run: brew upgrade ${tap_name}/utlt"
