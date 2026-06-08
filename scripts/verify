@@ -1,0 +1,249 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "digest"
+require "json"
+require "open3"
+require "pathname"
+require "tmpdir"
+
+ROOT = Pathname.new(File.expand_path("..", __dir__))
+PRIVATE_STRING_PATTERNS = [
+  [%r{/Users/}, "macOS user path"],
+  [%r{/private/tmp/}, "local temp path"],
+  [%r{\.cargo/registry}, "Cargo registry path"],
+  [%r{/usr/local/cargo/registry}, "Cargo registry path"],
+  [%r{/opt/homebrew/Cellar/rust}, "Homebrew Rust toolchain path"],
+  [%r{(^|[^[:alnum:]_./-])crates/[^[:space:]]+\.rs}, "project Rust source path"]
+].freeze
+
+def abort_with(message)
+  warn(message)
+  exit 1
+end
+
+def run!(*command)
+  output, status = Open3.capture2e(*command)
+  abort_with("#{command.join(" ")} failed:\n#{output}") unless status.success?
+  output
+end
+
+def command_available?(name)
+  ENV.fetch("PATH", "")
+     .split(File::PATH_SEPARATOR)
+     .any? { |dir| File.executable?(File.join(dir, name)) }
+end
+
+def json_files
+  Dir.glob(ROOT.join("{channels,versions}/**/*.json")).sort
+end
+
+def parse_json_files
+  json_files.each do |path|
+    body = JSON.parse(File.read(path))
+    verify_public_manifest_metadata(path, body) if path.include?("/versions/")
+  rescue JSON::ParserError => error
+    abort_with("#{path} is invalid JSON: #{error.message}")
+  end
+end
+
+def verify_public_manifest_metadata(path, body)
+  leaked = body.keys & %w[source_commit source_branch]
+  abort_with("#{path} exposes source provenance keys: #{leaked.join(", ")}") unless leaked.empty?
+
+  receipts = body.dig("verification", "receipts")
+  return unless receipts.is_a?(Array)
+
+  source_receipts = receipts.select { |receipt| receipt.is_a?(Hash) && receipt["type"] == "source-ref" }
+  return if source_receipts.empty?
+
+  abort_with("#{path} exposes source-ref verification receipts")
+end
+
+def tar_entries(path)
+  stdout, stderr, status = Open3.capture3("tar", "-tzf", path)
+  abort_with("tar list failed for #{path}:\n#{stderr}#{stdout}") unless status.success?
+  stdout.lines.map(&:chomp)
+end
+
+def checksum_for(path)
+  Digest::SHA256.file(path).hexdigest
+end
+
+def expected_checksum(path, expected_name)
+  abort_with("#{path} is missing") unless File.exist?(path)
+
+  content = File.read(path).strip
+  sha, name = content.split(/\s+/, 2)
+  abort_with("#{path} should name #{expected_name}, found #{name}") unless name == expected_name
+  sha
+end
+
+def verify_checksum(artifact, checksum)
+  sha = expected_checksum(checksum, File.basename(artifact))
+  actual = checksum_for(artifact)
+  return if sha == actual
+
+  abort_with("#{checksum} is out of sync for #{artifact}: expected #{actual}, found #{sha}")
+end
+
+def denylisted_entries(entries)
+  entries.grep(%r{(^|/)(\.git|\.arendi|src|crates|agent-self-docs|docs)(/|$)|\.(rs|ts|map|pdb)$|\.dSYM(/|$)|Cargo\.(toml|lock)$})
+end
+
+def executable?(path)
+  File.file?(path) && (File.stat(path).mode & 0o111) != 0
+end
+
+def audit_artifact_payload(artifact)
+  Dir.mktmpdir("homebrew-apps-audit") do |dir|
+    run!("tar", "-xzf", artifact, "-C", dir)
+    Dir.glob(File.join(dir, "**", "*"), File::FNM_DOTMATCH).sort.each do |path|
+      next unless File.file?(path)
+
+      audit_payload_strings(artifact, path)
+      audit_binary_sections_and_symbols(artifact, path) if executable?(path)
+    end
+  end
+end
+
+def audit_payload_strings(artifact, path)
+  output, status = Open3.capture2e("strings", "-a", path)
+  abort_with("strings failed for #{artifact}:#{path}\n#{output}") unless status.success?
+
+  findings = []
+  output.each_line do |line|
+    PRIVATE_STRING_PATTERNS.each do |pattern, reason|
+      next unless line.match?(pattern)
+
+      findings << "#{reason}: #{line.strip}"
+    end
+  end
+  return if findings.empty?
+
+  abort_with("private/source path strings found in #{artifact}:\n#{findings.uniq.first(20).join("\n")}")
+end
+
+def audit_binary_sections_and_symbols(artifact, path)
+  info = run!("file", path)
+  if info.include?("Mach-O")
+    audit_macho_symbols(artifact, path)
+    audit_macho_debug_sections(artifact, path)
+  elsif info.include?("ELF")
+    audit_elf_debug_sections(artifact, path)
+  end
+end
+
+def audit_macho_symbols(artifact, path)
+  output, status = Open3.capture2e("nm", path)
+  return unless status.success?
+
+  defined = output.lines.reject do |line|
+    stripped = line.strip
+    stripped.empty? ||
+      line.start_with?("                 U ") ||
+      stripped == "0000000100000000 T __mh_execute_header" ||
+      stripped.end_with?(" T __mh_execute_header")
+  end
+  return if defined.empty?
+
+  abort_with("defined Mach-O symbols found in #{artifact}:\n#{defined.first(20).join}")
+end
+
+def audit_macho_debug_sections(artifact, path)
+  return unless command_available?("otool")
+
+  output = run!("otool", "-l", path)
+  return unless output.include?("__DWARF") || output.include?("__debug")
+
+  abort_with("debug sections found in #{artifact}")
+end
+
+def audit_elf_debug_sections(artifact, path)
+  return unless command_available?("readelf")
+
+  output = run!("readelf", "-S", path)
+  debug_sections = output.lines.grep(/\.(debug|zdebug|symtab)(\s|$)/)
+  return if debug_sections.empty?
+
+  abort_with("debug/symbol sections found in #{artifact}:\n#{debug_sections.join}")
+end
+
+def verify_utlt_artifacts(formula)
+  verify_formula_artifacts(formula)
+
+  Dir.glob(ROOT.join("artifacts/utlt/*/*/utlt-*.tar.gz")).sort.each do |artifact|
+    entries = tar_entries(artifact)
+    abort_with("unexpected utlt artifact entries in #{artifact}:\n#{entries.join("\n")}") unless entries == ["utlt"]
+    audit_artifact_payload(artifact)
+
+    version = Pathname.new(artifact).relative_path_from(ROOT).each_filename.to_a[2]
+    platform = File.basename(File.dirname(artifact))
+    checksum = ROOT.join("checksums/utlt/#{version}/#{platform}.sha256")
+    verify_checksum(artifact, checksum)
+
+    next unless formula.include?("version \"#{version}\"")
+
+    sha = checksum_for(artifact)
+    abort_with("Formula/utlt.rb is missing sha #{sha} for #{platform}") unless formula.include?(sha)
+  end
+end
+
+def verify_formula_artifacts(formula)
+  version = formula[/version "([^"]+)"/, 1]
+  abort_with("Formula/utlt.rb is missing version") unless version
+
+  %w[aarch64-apple-darwin aarch64-unknown-linux-gnu x86_64-unknown-linux-gnu].each do |platform|
+    artifact = ROOT.join("artifacts/utlt/#{version}/#{platform}/utlt-#{version}-#{platform}.tar.gz")
+    checksum = ROOT.join("checksums/utlt/#{version}/#{platform}.sha256")
+    abort_with("Formula/utlt.rb references missing artifact #{artifact}") unless File.exist?(artifact)
+    verify_checksum(artifact, checksum)
+    sha = checksum_for(artifact)
+    abort_with("Formula/utlt.rb is missing sha #{sha} for #{platform}") unless formula.include?(sha)
+  end
+end
+
+def verify_agent_artifacts
+  Dir.glob(ROOT.join("artifacts/agent/*/*/*/agent-*.tar.gz")).sort.each do |artifact|
+    path = Pathname.new(artifact).relative_path_from(ROOT).each_filename.to_a
+    line = path[2]
+    version = path[3]
+    platform = path[4]
+    payload_name = "agent-#{line}-#{version}-#{platform}"
+    entries = tar_entries(artifact)
+    denied = denylisted_entries(entries)
+    abort_with("source/control entries found in #{artifact}:\n#{denied.join("\n")}") unless denied.empty?
+    required = "#{payload_name}/bin/acv3"
+    abort_with("#{artifact} is missing #{required}") unless entries.include?(required)
+    audit_artifact_payload(artifact)
+
+    checksum = ROOT.join("checksums/agent/#{line}/#{version}/#{platform}.sha256")
+    verify_checksum(artifact, checksum)
+    verify_agent_manifest(artifact, line, version, platform)
+  end
+end
+
+def verify_agent_manifest(artifact, line, version, platform)
+  manifest_path = ROOT.join("versions/agent/#{line}/#{version}.json")
+  abort_with("#{manifest_path} is missing") unless File.exist?(manifest_path)
+
+  manifest = JSON.parse(File.read(manifest_path))
+  platform_entry = manifest.fetch("platforms").find { |entry| entry.fetch("platform") == platform }
+  abort_with("#{manifest_path} has no #{platform} platform entry") unless platform_entry
+
+  expected_url = "../../../#{Pathname.new(artifact).relative_path_from(ROOT)}"
+  abort_with("#{manifest_path} has stale artifact_url for #{platform}") unless platform_entry.fetch("artifact_url") == expected_url
+  abort_with("#{manifest_path} has stale artifact_size for #{platform}") unless platform_entry.fetch("artifact_size") == File.size(artifact)
+  abort_with("#{manifest_path} has stale artifact_sha256 for #{platform}") unless platform_entry.fetch("artifact_sha256") == checksum_for(artifact)
+end
+
+formula_path = ROOT.join("Formula/utlt.rb")
+abort_with("#{formula_path} is missing") unless File.exist?(formula_path)
+
+run!("ruby", "-c", formula_path.to_s)
+parse_json_files
+formula = File.read(formula_path)
+verify_utlt_artifacts(formula)
+verify_agent_artifacts
+
+puts "homebrew-apps verification passed"
