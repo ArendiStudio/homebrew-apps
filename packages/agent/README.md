@@ -49,6 +49,19 @@ utlt uninstall agent
   <tbody>
     <tr>
       <td><code>agent@3-alpha</code></td>
+      <td><code>3.1.38-alpha</code></td>
+      <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
+      <td>
+        <ul>
+          <li><code>fix:</code> harden task-agent lifecycle reuse, replacement, and diagnostics.</li>
+          <li><code>fix:</code> harden mounted-volume and UTLT launch environments.</li>
+          <li><code>fix:</code> make feedback posting destination-safe and live-configurable.</li>
+          <li><code>fix:</code> remove private path detector literals from packaged binaries.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><code>agent@3-alpha</code></td>
       <td><code>3.1.33-alpha</code></td>
       <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
       <td>
