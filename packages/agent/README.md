@@ -49,6 +49,19 @@ utlt uninstall agent
   <tbody>
     <tr>
       <td><code>agent@3-alpha</code></td>
+      <td><code>3.1.33-alpha</code></td>
+      <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
+      <td>
+        <ul>
+          <li><code>feat:</code> add reviewed feedback drafts for bug and feature reports.</li>
+          <li><code>fix:</code> remove private temporary path placeholders from packaged binaries.</li>
+          <li><code>fix:</code> keep issue posting guarded behind explicit operator approval.</li>
+          <li><code>fix:</code> harden task-agent sandbox launch and reviewer checkout visibility.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><code>agent@3-alpha</code></td>
       <td><code>3.1.25-alpha</code></td>
       <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
       <td>
