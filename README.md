@@ -8,7 +8,7 @@ run them unless you know me or have been directly invited to test them. Use them
 at your own risk.
 
 `utlt` currently publishes Homebrew artifacts for Apple Silicon macOS, Linux
-arm64, and Linux x86_64. Windows is not currently supported.
+arm64, and Linux x86_64.
 
 <br>
 
@@ -18,96 +18,53 @@ arm64, and Linux x86_64. Windows is not currently supported.
 
 Skip if you already have Homebrew installed.
 
-```bash
-# macOS & Linux
-https://brew.sh/
+###### macOS & Linux
 
-# Windows
-# N/A
-```
+Follow the official installer at [brew.sh](https://brew.sh/).
 
 ### Step 2. Add the apps tap
 
-```bash
-# macOS & Linux
-brew tap arendistudio/apps
-brew trust --tap arendistudio/apps
+###### macOS & Linux
 
-# Windows
-# N/A
+```bash
+brew tap arendistudio/apps
+```
+
+```bash
+brew trust --tap arendistudio/apps
 ```
 
 ### Step 3. Install `utlt`
 
+###### macOS & Linux
+
 ```bash
-# macOS & Linux
 brew install arendistudio/apps/utlt
-
-# Windows
-# N/A
 ```
 
-### Step 4. Optional: clear macOS quarantine if blocked
+### Step 4. Clear macOS quarantine
+
+###### macOS
 
 ```bash
-# macOS
 xattr -dr com.apple.quarantine "$(brew --prefix utlt)" 2>/dev/null || true
-
-# Linux
-# No action required
-
-# Windows
-# N/A
 ```
 
-### Step 5. Install `utlt` packages
+###### Linux
+
+No action required.
+
+### Step 5. Choose which `utlt` packages you want to install
+<small>Remove `--install-dependencies` flag if you want to manage package dependencies yourself.</small>
+
+###### agent@3-alpha - Multi-agent orchestration with observable, durable task context for Codex harness. Feature frozen, bug/hot fixes only.
 
 ```bash
-# macOS & Linux
-utlt install <package>@<track> --install-dependencies
-
-# Windows
-# N/A
+utlt install agent@3-alpha --install-dependencies
 ```
 
-Use `--install-dependencies` to let `utlt` check required Homebrew
-dependencies, skip anything already installed, and install only what is missing.
-Omit it if you want to manage package dependencies yourself.
+###### agent@4-alpha - Available soon for early access, starting as harness-agnostic durable task context.
 
-<br>
-
-#### Active packages
-
-<table>
-  <thead>
-    <tr>
-      <th width="22%">Package</th>
-      <th width="78%">Details</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td rowspan="3"><code>agent@3-alpha</code></td>
-      <td><strong>What it is:</strong> Multi-agent orchestration with observable, durable task context for Codex harness.</td>
-    </tr>
-    <tr>
-      <td><strong>Status:</strong> Feature frozen, bug/hot fixes only.</td>
-    </tr>
-    <tr>
-      <td>
-        <strong>Install:</strong>
-        <pre><code>utlt install agent@3-alpha --install-dependencies</code></pre>
-      </td>
-    </tr>
-    <tr>
-      <td rowspan="2"><code>agent@4-alpha</code></td>
-      <td><strong>What it is:</strong> Evolution and hardening of <code>agent@3-alpha</code> fundamentals.</td>
-    </tr>
-    <tr>
-      <td><strong>Status:</strong> Available soon for early access, starting as harness-agnostic durable task context.</td>
-    </tr>
-  </tbody>
-</table>
 
 See all versions: [agent](packages/agent/).
 
@@ -117,8 +74,13 @@ See all versions: [agent](packages/agent/).
 
 ### Upgrade `utlt`
 
+###### macOS & Linux
+
 ```bash
 brew update
+```
+
+```bash
 brew upgrade arendistudio/apps/utlt
 ```
 
@@ -127,10 +89,15 @@ shows conflict markers in `Formula/utlt.rb`, repair the local tap checkout once:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/ArendiStudio/homebrew-apps/main/scripts/repair-local-tap | bash
+```
+
+```bash
 brew upgrade arendistudio/apps/utlt
 ```
 
 ### Upgrade packages
+
+###### macOS & Linux
 
 ```bash
 utlt install <package>@<track> --install-dependencies
@@ -146,11 +113,15 @@ check and install missing package dependencies too.
 
 ### Reinstall `utlt`
 
+###### macOS & Linux
+
 ```bash
 brew reinstall arendistudio/apps/utlt
 ```
 
 ### Reinstall packages
+
+###### macOS & Linux
 
 ```bash
 utlt install <package>@<track>
@@ -162,6 +133,8 @@ utlt install <package>@<track>
 
 ### Uninstall packages
 
+###### macOS & Linux
+
 ```bash
 utlt uninstall <package>
 ```
@@ -171,8 +144,13 @@ state for that package. It does not remove `utlt` itself.
 
 ### Uninstall `utlt`
 
+###### macOS & Linux
+
 ```bash
 brew uninstall arendistudio/apps/utlt
+```
+
+```bash
 brew untap arendistudio/apps
 ```
 
