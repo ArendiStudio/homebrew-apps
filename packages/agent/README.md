@@ -49,6 +49,19 @@ utlt uninstall agent
   <tbody>
     <tr>
       <td><code>agent@3-alpha</code></td>
+      <td><code>3.1.45-alpha</code></td>
+      <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
+      <td>
+        <ul>
+          <li><code>fix:</code> require full-loop completion for sandbox task-agent flows.</li>
+          <li><code>fix:</code> restore workspace-write task agents and avoid nested Codex sandbox launches.</li>
+          <li><code>fix:</code> reject ambiguous merge-repair worker proposals and ignore checkout metadata noise.</li>
+          <li><code>fix:</code> label feedback report origins and refresh Codex model update labels.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><code>agent@3-alpha</code></td>
       <td><code>3.1.38-alpha</code></td>
       <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
       <td>
