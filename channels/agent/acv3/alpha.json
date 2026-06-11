@@ -3,12 +3,12 @@
   "product": "agent",
   "line": "acv3",
   "channel": "alpha",
-  "current_version": "3.1.48-alpha",
+  "current_version": "3.1.49-alpha",
   "versions": [
     {
-      "version": "3.1.48-alpha",
-      "manifest": "../../../versions/agent/acv3/3.1.48-alpha.json"
+      "version": "3.1.49-alpha",
+      "manifest": "../../../versions/agent/acv3/3.1.49-alpha.json"
     }
   ],
-  "updated_at": "2026-06-11T03:23:13Z"
+  "updated_at": "2026-06-11T03:40:07Z"
 }

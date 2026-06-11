@@ -1,0 +1,81 @@
+{
+  "manifest_version": 1,
+  "product": "agent",
+  "line": "acv3",
+  "channel": "alpha",
+  "version": "3.1.49-alpha",
+  "build_id": "3.1.49-alpha",
+  "dependencies": [
+    {
+      "id": "git",
+      "manager": "homebrew",
+      "kind": "formula",
+      "name": "git",
+      "required": true
+    },
+    {
+      "id": "tmux",
+      "manager": "homebrew",
+      "kind": "formula",
+      "name": "tmux",
+      "required": true
+    },
+    {
+      "id": "codex",
+      "manager": "homebrew",
+      "kind": "cask",
+      "name": "codex",
+      "required": true,
+      "post_install_note": "Run codex once to sign in if needed."
+    }
+  ],
+  "platforms": [
+    {
+      "platform": "aarch64-apple-darwin",
+      "artifact_url": "../../../artifacts/agent/acv3/3.1.49-alpha/aarch64-apple-darwin/agent-acv3-3.1.49-alpha-aarch64-apple-darwin.tar.gz",
+      "artifact_sha256": "01912a051898a3f6afcaac45d987b160ad468ebe1c6796919951e7a340486913",
+      "artifact_size": 1391285,
+      "entrypoint": "bin/acv3"
+    },
+    {
+      "platform": "aarch64-unknown-linux-gnu",
+      "artifact_url": "../../../artifacts/agent/acv3/3.1.49-alpha/aarch64-unknown-linux-gnu/agent-acv3-3.1.49-alpha-aarch64-unknown-linux-gnu.tar.gz",
+      "artifact_sha256": "1ad780f0c90ea99c6d470920cf8101f8f8ef85eeea7ec8c973c2dba0029e886d",
+      "artifact_size": 1393456,
+      "entrypoint": "bin/acv3"
+    },
+    {
+      "platform": "x86_64-unknown-linux-gnu",
+      "artifact_url": "../../../artifacts/agent/acv3/3.1.49-alpha/x86_64-unknown-linux-gnu/agent-acv3-3.1.49-alpha-x86_64-unknown-linux-gnu.tar.gz",
+      "artifact_sha256": "631c0122b780d3ae945b38ba3252776df613a7ddfed4bcf02553c612b11b093e",
+      "artifact_size": 1512606,
+      "entrypoint": "bin/acv3"
+    }
+  ],
+  "rollback_target": null,
+  "revoked": false,
+  "verification": {
+    "status": "artifact-audited",
+    "receipts": [
+      {
+        "type": "artifact-audit",
+        "status": "passed",
+        "denylist": [
+          ".git",
+          ".arendi",
+          "src",
+          "crates",
+          "agent-self-docs",
+          "docs",
+          "*.rs",
+          "*.ts",
+          "*.map",
+          "*.dSYM",
+          "*.pdb",
+          "Cargo.toml",
+          "Cargo.lock"
+        ]
+      }
+    ]
+  }
+}
