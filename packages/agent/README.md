@@ -49,6 +49,17 @@ utlt uninstall agent
   <tbody>
     <tr>
       <td><code>agent@3-alpha</code></td>
+      <td><code>3.1.47-alpha</code></td>
+      <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
+      <td>
+        <ul>
+          <li><code>fix:</code> prune merge source worktrees after release work.</li>
+          <li><code>fix:</code> tolerate a missing current tmux target during <code>utlt attach</code>.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><code>agent@3-alpha</code></td>
       <td><code>3.1.45-alpha</code></td>
       <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
       <td>
