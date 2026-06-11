@@ -33,8 +33,8 @@
     {
       "platform": "aarch64-apple-darwin",
       "artifact_url": "../../../artifacts/agent/acv3/3.1.50-alpha/aarch64-apple-darwin/agent-acv3-3.1.50-alpha-aarch64-apple-darwin.tar.gz",
-      "artifact_sha256": "274652b7f68980f1fb9abf9266047cb100c723de36a493fabb9e1e5100bea78f",
-      "artifact_size": 1391422,
+      "artifact_sha256": "e640e857f42097ac844f3ecd0956867b842e9198656202e170d1533dd3d3053b",
+      "artifact_size": 1382945,
       "entrypoint": "bin/acv3"
     },
     {
