@@ -331,38 +331,44 @@ Check whether a task can enter its next lane:
 utlt agent lanes check T-0001
 ```
 
-Default lane flow:
+Default lane path:
 
 ```mermaid
-flowchart TD
-  Scheduler["worker_scheduler<br/>auto_pickup=true<br/>max_concurrent_spawns=10<br/>worker_after_handoff=park<br/>reviewer_after_review=stop<br/>task_agent_sandbox=casual"]
-  Backlog["backlog<br/>Future work<br/>auto_move=false<br/>worker_eligible=false"]
-  Todo["to_do<br/>Ready to start<br/>auto_move=true<br/>worker_eligible=false"]
-  Progress["in_progress<br/>Worker implementation<br/>auto_move=true<br/>worker_eligible=true<br/>max_concurrent_spawns=5"]
-  Review["in_review<br/>Independent review<br/>auto_move=true<br/>worker_eligible=true<br/>max_concurrent_spawns=5"]
-  MergeReady["merge_ready<br/>Ready for local merge<br/>auto_move=false<br/>worker_eligible=false"]
-  Done["done<br/>Merged locally<br/>auto_move=false"]
-  Pushed["pushed_remote<br/>Remote push recorded<br/>auto_move=false"]
-  Archived["archived<br/>Historical work"]
+flowchart LR
+  Backlog["backlog"]
+  Todo["to_do"]
+  Progress["in_progress"]
+  Review["in_review"]
+  MergeReady["merge_ready"]
+  Done["done"]
+  Pushed["pushed_remote"]
 
-  Scheduler -. "auto-pickup starts eligible worker/reviewer sessions" .-> Progress
-  Scheduler -. "auto-pickup starts eligible worker/reviewer sessions" .-> Review
-  Backlog -->|"clear title + description + acceptance + checklist"| Todo
-  Todo -->|"auto-move; ensure worktree + start cycle + attach worktree"| Progress
-  Progress -->|"checklist complete + evidence + clean task worktree + task branch commits + branch includes destination + primary checkout clean"| Review
-  Review -->|"review fail + cycles remain"| Progress
-  Review -->|"review passed"| MergeReady
-  MergeReady -->|"rework requested + cycles remain"| Progress
-  MergeReady -->|"local merge recorded; worktree pruned by default"| Done
-  Done -->|"remote push recorded"| Pushed
-  Backlog -. "archive" .-> Archived
-  Todo -. "archive" .-> Archived
-  Progress -. "archive; close cycle + release claim" .-> Archived
-  Review -. "archive; close cycle + release claim" .-> Archived
-  MergeReady -. "archive" .-> Archived
-  Done -. "archive" .-> Archived
-  Pushed -. "archive" .-> Archived
+  Backlog -->|"ready to start"| Todo
+  Todo -->|"worker pickup"| Progress
+  Progress -->|"handoff gates pass"| Review
+  Review -->|"pass"| MergeReady
+  Review -->|"fail + retry"| Progress
+  MergeReady -->|"local merge"| Done
+  Done -->|"remote push"| Pushed
 ```
+
+The generated default policy keeps the diagram simple but still enforces gates:
+
+| Step | Default behavior |
+| --- | --- |
+| `backlog -> to_do` | Requires clear task text, acceptance criteria, and checklist. |
+| `to_do -> in_progress` | Auto-move can start worker pickup; ACV3 ensures and attaches a task worktree. |
+| `in_progress -> in_review` | Requires completed checklist, evidence, clean task worktree, task branch commits, branch includes destination, and clean primary checkout. |
+| `in_review -> merge_ready` | Requires review pass. |
+| `in_review -> in_progress` | Review fail can start another worker repair cycle when cycles remain. |
+| `merge_ready -> done` | Requires a recorded local merge; the default merge policy prunes the task worktree. |
+| `done -> pushed_remote` | Requires a recorded remote push. |
+
+`archived` is available as an exit path for historical work, but it is omitted
+from the diagram so the active delivery path stays readable. The default worker
+scheduler has `auto_pickup = true`, caps total spawned task agents at 10, caps
+`in_progress` and `in_review` at 5 each, parks workers after review handoff,
+and stops reviewers after review.
 
 ## Workflow Policy In `lanes.toml`
 
