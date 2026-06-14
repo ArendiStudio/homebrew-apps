@@ -32,7 +32,8 @@ utlt agent codex
 
 Use `utlt agent --version` to print the installed agent package version.
 
-For a first project walkthrough, see [onboarding.md](onboarding.md).
+For a first project walkthrough, see [onboarding.md](onboarding.md). For the
+detailed workflow guide, see [onboarding-full.md](onboarding-full.md).
 
 ## Uninstall
 
