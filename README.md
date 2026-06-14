@@ -18,6 +18,7 @@ arm64, and Linux x86_64.
   - [Step 3. Install `utlt`](#step-3-install-utlt)
   - [Step 4. Clear macOS quarantine](#step-4-clear-macos-quarantine)
   - [Step 5. Choose packages](#step-5-choose-which-utlt-packages-you-want-to-install)
+- [Command reference](#command-reference)
 - [Upgrade](#upgrade)
   - [Upgrade `utlt`](#upgrade-utlt)
   - [Upgrade packages](#upgrade-packages)
@@ -89,6 +90,23 @@ See all versions: [agent](packages/agent/).
 
 <br>
 
+## Command reference
+
+After `utlt` is installed, these are the common launcher and package commands.
+Package-specific runtime commands live in each package's docs.
+
+| Goal | Command |
+| --- | --- |
+| Show update targets | `utlt update list` |
+| Update the `utlt` launcher | `utlt update utlt` |
+| Install a package track | `utlt install <package>@<track> --install-dependencies` |
+| Update a package track | `utlt update <package>@<track> --install-dependencies` |
+| Show installed package state | `utlt packages` |
+| Show package help | `utlt help <package>` |
+| Uninstall a package | `utlt uninstall <package>` |
+
+<br>
+
 ## Upgrade
 
 ### Upgrade `utlt`
@@ -96,11 +114,7 @@ See all versions: [agent](packages/agent/).
 ###### macOS & Linux
 
 ```bash
-brew update
-```
-
-```bash
-brew upgrade arendistudio/apps/utlt
+utlt update utlt
 ```
 
 If you tested `utlt` before the early-access tap history reset and Homebrew
@@ -119,12 +133,12 @@ brew upgrade arendistudio/apps/utlt
 ###### macOS & Linux
 
 ```bash
-utlt install <package>@<track> --install-dependencies
+utlt update <package>@<track> --install-dependencies
 ```
 
-Rerunning package install updates the active package payload to the current
-version for that track. Add `--install-dependencies` when you want `utlt` to
-check and install missing package dependencies too.
+Package update refreshes the active package payload to the current version for
+that track. Add `--install-dependencies` when you want `utlt` to check and
+install missing package dependencies too.
 
 <br>
 

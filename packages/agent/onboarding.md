@@ -94,18 +94,22 @@ utlt agent stop all
 
 ## Quick Lane Path
 
+This is the outer task-board workflow. You see these lanes in
+`utlt agent observe tasks`; they describe where one task is in the delivery
+process.
+
 ```mermaid
-flowchart LR
-  Backlog["backlog"]
-  Todo["to_do"]
-  Progress["in_progress"]
-  Review["in_review"]
-  MergeReady["merge_ready"]
-  Done["done"]
-  Pushed["pushed_remote"]
+flowchart TD
+  Backlog["backlog<br/>future work"]
+  Todo["to_do<br/>ready to start"]
+  Progress["in_progress<br/>worker owns implementation"]
+  Review["in_review<br/>reviewer checks the work"]
+  MergeReady["merge_ready<br/>passed review"]
+  Done["done<br/>merged locally"]
+  Pushed["pushed_remote<br/>remote push recorded"]
 
   Backlog -->|"ready"| Todo
-  Todo -->|"worker pickup"| Progress
+  Todo -->|"pickup"| Progress
   Progress -->|"handoff gates pass"| Review
   Review -->|"pass"| MergeReady
   Review -->|"fail + retry"| Progress
@@ -114,6 +118,10 @@ flowchart LR
 ```
 
 ## Quick Worker/Reviewer Loop
+
+This is the inner loop for a task after it reaches implementation. The
+coordinator routes work, the worker changes the task worktree, and the reviewer
+checks the evidence and committed diff before merge.
 
 ```mermaid
 flowchart TD

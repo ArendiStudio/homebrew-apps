@@ -335,15 +335,19 @@ utlt agent lanes check T-0001
 
 Default lane path:
 
+This is the outer workflow shown on the task board. It is separate from the
+worker/reviewer sessions that do the implementation and review work inside
+`in_progress` and `in_review`.
+
 ```mermaid
-flowchart LR
-  Backlog["backlog"]
-  Todo["to_do"]
-  Progress["in_progress"]
-  Review["in_review"]
-  MergeReady["merge_ready"]
-  Done["done"]
-  Pushed["pushed_remote"]
+flowchart TD
+  Backlog["backlog<br/>future work"]
+  Todo["to_do<br/>ready to start"]
+  Progress["in_progress<br/>worker implementation"]
+  Review["in_review<br/>independent review"]
+  MergeReady["merge_ready<br/>passed review"]
+  Done["done<br/>merged locally"]
+  Pushed["pushed_remote<br/>remote push recorded"]
 
   Backlog -->|"ready to start"| Todo
   Todo -->|"worker pickup"| Progress
@@ -426,6 +430,9 @@ utlt agent lanes validate
 Workers and reviewers are separate task-scoped sessions. The worker owns
 implementation and repair. The reviewer owns review. A reviewer should inspect
 the task and record a pass or fail result, not repair the task directly.
+
+This graph zooms into one task's delivery loop. It explains what happens between
+the task entering worker-owned implementation and becoming merge-ready.
 
 Default worker/reviewer cycle:
 
