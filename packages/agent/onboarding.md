@@ -62,29 +62,78 @@ Move into a test project:
 cd /path/to/test-project
 ```
 
-Initialize ACV3 state:
+Initialize ACV3 state for this project:
 
 ```bash
 utlt agent init
 ```
 
-Open the coordinator:
+This is required before the coordinator, task board, workers, and reviewers can
+operate in a project. It creates project-local state under `.arendi/corev3`:
+
+```text
+.arendi/corev3/
+  lanes.toml
+  settings.toml
+  tasks/
+  events/
+  agents/
+  sessions/
+  worktrees/
+  daemon/
+  observe/
+```
+
+The important part is `worktrees/`. Each task gets its own Git worktree there,
+so you can inspect the actual files a worker changed before anything is merged.
+
+Terminal 1 is the coordinator:
 
 ```bash
 utlt agent codex
 ```
 
-Open the task board in a second terminal:
+Use the coordinator as the main UX. Ask it to create/refine tasks, route work,
+answer status questions, and merge reviewed work. By default, automation can run
+up to five worker tasks in `in_progress` and five reviewer tasks in `in_review`
+at the same time. Each task that reaches review gets a reviewer session.
+
+Terminal 2 is the task board:
 
 ```bash
 utlt agent observe tasks
 ```
 
-Open live worker/reviewer panes in a third terminal:
+Open this in a separate terminal window or tab. It shows lanes, task details,
+checklists, evidence, review status, and merge readiness.
+
+Terminal 3 is the live agent observer:
 
 ```bash
 utlt agent observe agents
 ```
+
+Open this in another terminal window or tab. It shows worker and reviewer panes
+while they run. Do not type into those panes; ask the coordinator to manage
+workers and reviewers.
+
+Before merging, inspect the task worktree and run the project checks there:
+
+```bash
+ls .arendi/corev3/worktrees
+```
+
+```bash
+cd .arendi/corev3/worktrees/t-0001
+```
+
+```bash
+git status --short
+```
+
+Replace `t-0001` with the task worktree you want to QA. The task board shows
+which task is ready for review or merge. Merge only after the task has evidence,
+a reviewer pass, and worktree checks that match the project.
 
 Stop all agent sessions when finished:
 

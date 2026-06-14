@@ -171,7 +171,11 @@ Initialize agent state:
 utlt agent init
 ```
 
-This creates local runtime state under:
+The package install makes the agent command available. `utlt agent init`
+prepares the current project for orchestration. Run it once before starting the
+coordinator, task board, workers, or reviewers for that project.
+
+It creates local runtime state under:
 
 ```text
 .arendi/corev3
@@ -226,7 +230,7 @@ task commands, or lane commands instead.
 
 ## Run The Coordinator
 
-Open the main coordinator from the project root:
+Open the main coordinator from the project root in terminal 1:
 
 ```bash
 utlt agent codex
@@ -238,6 +242,10 @@ In team mode, treat the coordinator as the routing and integration surface. It
 should create or refine tasks, answer status questions, and coordinate merges;
 implementation and review should run in task-scoped worker and reviewer
 sessions.
+
+Keep this terminal focused on coordinator conversation. Open the task board and
+agent observer in separate terminal windows or tabs so the coordinator remains
+available for prompts.
 
 Good coordinator prompts are specific about the outcome and constraints:
 
@@ -252,24 +260,27 @@ Show me which tasks are blocked and what each one needs next.
 
 ## Watch Tasks
 
-Open a second terminal window or pane from the same project root:
+Open terminal 2 from the same project root:
 
 ```bash
 utlt agent observe tasks
 ```
 
-This opens the task board. Use the arrow keys to navigate between the task
-index and task detail views.
+This opens the task board. Use it to watch lanes, task details, checklist
+state, recorded evidence, review state, and merge readiness. Use the arrow keys
+to navigate between the task index and task detail views.
 
 ## Watch Agents
 
-Open a third terminal window or pane from the same project root:
+Open terminal 3 from the same project root:
 
 ```bash
 utlt agent observe agents
 ```
 
-This shows live worker and reviewer sessions.
+This shows live worker and reviewer sessions. The default scheduler can run up
+to five `in_progress` worker tasks and five `in_review` reviewer tasks at the
+same time. Each task that reaches review gets a reviewer session.
 
 Do not type directly into worker or reviewer panes. Those panes are
 automation-owned. If you need something from a worker or reviewer, ask the
@@ -517,6 +528,10 @@ artifacts into the primary checkout. That lets ACV3 scan the worktree, verify
 that it is clean, confirm the branch has commits, and keep review/merge state
 attached to the task.
 
+Worktrees are also the operator QA surface. Before merge, inspect the task's
+worktree, review the changed files, and run whatever project checks are
+appropriate from inside that worktree.
+
 Show the worktree plan for a task:
 
 ```bash
@@ -528,6 +543,20 @@ Scan a task worktree:
 ```bash
 utlt agent repo worktree scan --task T-0001
 ```
+
+Open a task worktree directly:
+
+```bash
+cd .arendi/corev3/worktrees/t-0001
+```
+
+Check the task worktree status:
+
+```bash
+git status --short
+```
+
+Replace `T-0001` or `t-0001` with the task id shown on the task board.
 
 On macOS Finder, press:
 
