@@ -24,10 +24,15 @@ Required Homebrew dependencies:
 
 ```bash
 utlt agent init
+```
+
+```bash
 utlt agent codex
 ```
 
 Use `utlt agent --version` to print the installed agent package version.
+
+For a first project walkthrough, see [onboarding.md](onboarding.md).
 
 ## Uninstall
 
