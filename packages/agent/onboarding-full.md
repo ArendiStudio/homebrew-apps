@@ -10,7 +10,7 @@ For the shorter 80/20 entry point, see [onboarding.md](onboarding.md).
 
 ## Index
 
-- [What ACV3 Orchestration Does](#what-acv3-orchestration-does)
+- [What Agent Orchestration Does](#what-agent-orchestration-does)
 - [Workflow At A Glance](#workflow-at-a-glance)
 - [Install](#install)
 - [Update](#update)
@@ -28,9 +28,9 @@ For the shorter 80/20 entry point, see [onboarding.md](onboarding.md).
 - [More Commands](#more-commands)
 - [Troubleshooting](#troubleshooting)
 
-## What ACV3 Orchestration Does
+## What Agent Orchestration Does
 
-`agent@3-alpha` is backed by ACV3 orchestration. Use it when work should be
+`agent@3-alpha` provides agent orchestration. Use it when work should be
 tracked as durable tasks instead of handled as one long chat thread.
 
 The coordinator is the session you talk to. It turns actionable requests into
@@ -49,8 +49,9 @@ This is most useful for:
 - operator sessions where you want to watch progress without babysitting every
   command
 
-For quick one-off questions, a normal Codex chat may be simpler. Use ACV3 when
-you want the work to survive the chat and move through a visible workflow.
+For quick one-off questions, a normal Codex chat may be simpler. Use
+`agent@3-alpha` when you want the work to survive the chat and move through a
+visible workflow.
 
 ## Workflow At A Glance
 
@@ -59,7 +60,7 @@ coordinator.
 
 Setup flow:
 
-1. Install the `utlt` launcher with Homebrew.
+1. Install `utlt`, the Arendi app launcher and package manager.
 2. Install the `agent@3-alpha` package with `utlt`.
 3. Initialize agent state inside the project folder with `utlt agent init`.
 4. Launch the coordinator with `utlt agent codex`. This is required.
@@ -84,7 +85,7 @@ The normal loop is:
 1. Initialize the project with `utlt agent init`.
 2. Start the coordinator with `utlt agent codex`.
 3. Ask the coordinator for work in natural language.
-4. ACV3 records durable tasks under `.arendi/corev3`.
+4. The agent package records durable tasks under `.arendi/corev3`.
 5. Eligible tasks move into worker-owned implementation.
 6. Workers edit in task worktrees and record evidence.
 7. Reviewers inspect the task worktree, commits, and evidence.
@@ -93,13 +94,14 @@ The normal loop is:
 
 ## Install
 
-Install Homebrew first if it is not already installed.
-
 `utlt` and `agent@3-alpha` are separate installs with separate jobs. `utlt` is
-not the agent; it is the launcher and package manager installed by Homebrew.
+not the agent; it is the Arendi app launcher and package manager.
 `agent@3-alpha` is not the launcher; it is the agent package installed by
-`utlt`. After both are installed, commands like `utlt agent init` use the
-`agent@3-alpha` package through the `utlt` launcher.
+`utlt`. Homebrew is the install channel for `utlt` on macOS and Linux, not the
+product you use day to day. After both are installed, commands like
+`utlt agent init` use the `agent@3-alpha` package through the `utlt` launcher.
+
+Install Homebrew first if it is not already installed.
 
 ###### macOS & Linux
 
@@ -127,7 +129,7 @@ On macOS, clear quarantine after installing or upgrading `utlt`:
 xattr -dr com.apple.quarantine "$(brew --prefix utlt)" 2>/dev/null || true
 ```
 
-Install the agent package and its Homebrew dependencies:
+Install the agent package and let `utlt` check dependencies:
 
 ```bash
 utlt install agent@3-alpha --install-dependencies
@@ -198,7 +200,7 @@ prepares the current project for orchestration. Run it once before starting
 [the coordinator](#run-the-coordinator), [the task board](#watch-tasks),
 workers, or reviewers for that project.
 
-It creates local runtime state under:
+It creates local agent state under:
 
 ```text
 .arendi/corev3
@@ -207,12 +209,12 @@ It creates local runtime state under:
 Task state, agent state, sessions, lane policy, and task worktrees are stored
 there. If the folder is not already a Git repository, initialization prepares
 local Git state so per-task worktrees can be created. It is safe to rerun
-initialization; ACV3 repairs missing default workflow config additively instead
-of replacing local `lanes.toml` edits.
+initialization; the agent package repairs missing default workflow config
+additively instead of replacing local `lanes.toml` edits.
 
 ## Project State Under `.arendi/corev3`
 
-ACV3 state is project-local. Commands discover the nearest parent folder that
+Agent state is project-local. Commands discover the nearest parent folder that
 contains `.arendi/corev3`, so run commands from the project root or a child
 folder inside that project.
 
@@ -247,7 +249,7 @@ Common entries include:
 | `.arendi/corev3/runtime-qa/` | Runtime QA requests, receipts, and artifacts when true-path QA is used. |
 
 Treat `lanes.toml` and `settings.toml` as configuration. Treat `tasks/`,
-`events/`, `agents/`, `sessions/`, and `daemon/` as ACV3-owned runtime state.
+`events/`, `agents/`, `sessions/`, and `daemon/` as agent-owned runtime state.
 Do not hand-edit runtime records to force task progress; use the coordinator,
 task commands, or lane commands instead.
 
@@ -323,7 +325,7 @@ coordinator to manage the sub-agent.
 ## Task Lanes
 
 Lanes are the visible workflow states on [the task board](#watch-tasks). The
-default ACV3 workflow is intentionally small enough to inspect while separating
+default agent workflow is intentionally small enough to inspect while separating
 planning, implementation, review, merge, and remote-push state.
 
 | Lane id | Meaning |
@@ -339,10 +341,11 @@ planning, implementation, review, merge, and remote-push state.
 | `pushed_remote` | Work that has a recorded remote push. |
 | `archived` | Historical work hidden from the active flow. |
 
-ACV3 separates lane movement from ownership. A task can move because configured
-criteria passed, while claims record who currently owns the work. For example,
-a worker completing verification and recording evidence does not manually move
-the task to review; ACV3 moves it when the configured gates pass.
+The agent workflow separates lane movement from ownership. A task can move
+because configured criteria passed, while claims record who currently owns the
+work. For example, a worker completing verification and recording evidence does
+not manually move the task to review; the workflow moves it when the configured
+gates pass.
 
 Common gates include:
 
@@ -408,7 +411,7 @@ The generated default policy keeps the diagram simple but still enforces gates:
 | Step | Default behavior |
 | --- | --- |
 | `backlog -> to_do` | Requires clear task text, acceptance criteria, and checklist. |
-| `to_do -> in_progress` | Auto-move can start worker pickup; ACV3 ensures and attaches a task worktree. |
+| `to_do -> in_progress` | Auto-move can start worker pickup; the agent package ensures and attaches a task worktree. |
 | `in_progress -> in_review` | Requires completed checklist, evidence, clean task worktree, task branch commits, branch includes destination, and clean primary checkout. |
 | `in_review -> merge_ready` | Requires review pass. |
 | `in_review -> in_progress` | Review fail can start another worker repair cycle when cycles remain. |
@@ -432,8 +435,8 @@ The lane policy file lives at:
 `lanes.toml` is the project-local workflow contract. It is generated by
 `utlt agent init` and can be migrated forward as new defaults are added. It is
 the right place to inspect how this project names lanes, orders lanes, decides
-whether a lane can auto-move, and decides whether ACV3 can pick up work with a
-worker or reviewer.
+whether a lane can auto-move, and decides whether the scheduler can pick up
+work with a worker or reviewer.
 
 Important sections:
 
@@ -485,14 +488,14 @@ Default worker/reviewer cycle:
 flowchart TD
   Intake["Coordinator creates or refines task<br/>title, description, acceptance, checklist"]
   Todo["Task reaches to_do"]
-  Start["ACV3 moves task into in_progress<br/>ensure worktree + start cycle + attach worktree"]
+  Start["Agent workflow moves task into in_progress<br/>ensure worktree + start cycle + attach worktree"]
   Worker["Worker session claims task<br/>reads task detail and checklist"]
   Worktree["Worker edits only the task worktree<br/>.arendi/corev3/worktrees/t-0001"]
   Checklist["Worker completes verification items<br/>updates checklist through task tools"]
   Evidence["Worker records durable evidence<br/>what changed + how it was verified"]
   Commit["Worker commits on task branch<br/>example: draft/main/t-0001"]
   Gates{"Review handoff gates pass?"}
-  ReviewLane["ACV3 closes cycle, releases claim,<br/>and moves task to in_review"]
+  ReviewLane["Agent workflow closes cycle, releases claim,<br/>and moves task to in_review"]
   Reviewer["Reviewer session inspects<br/>task detail + checklist + evidence + checkout metadata + committed diff"]
   Decision{"Reviewer result"}
   MergeReady["Pass: task moves to merge_ready"]
@@ -558,9 +561,9 @@ draft/main/t-0001
 ```
 
 Workers should make task changes inside the task worktree, not by writing task
-artifacts into the primary checkout. That lets ACV3 scan the worktree, verify
-that it is clean, confirm the branch has commits, and keep review/merge state
-attached to the task.
+artifacts into the primary checkout. That lets the agent package scan the
+worktree, verify that it is clean, confirm the branch has commits, and keep
+review/merge state attached to the task.
 
 Worktrees are also the operator QA surface. Before merge, inspect the task's
 worktree, review the changed files, and run whatever project checks are
@@ -613,9 +616,9 @@ The coordinator handles merge routing. When tasks are ready, ask the coordinator
 which tasks can be merged.
 
 Merge only work that has passed the configured review path and reached
-`merge_ready`. ACV3 records the task branch, destination branch, merge result,
-and cleanup policy so [the task board](#watch-tasks) can distinguish local
-merge state from remote push state.
+`merge_ready`. The agent package records the task branch, destination branch,
+merge result, and cleanup policy so [the task board](#watch-tasks) can
+distinguish local merge state from remote push state.
 
 Example prompt:
 
@@ -625,16 +628,16 @@ Merge tasks T-0001, T-0002, and T-0003 when they are ready.
 
 ## Stop Sessions
 
-Use this as the ACV3 kill switch when you want to close all running agent
-sessions for the project:
+Use this as the agent-session kill switch when you want to close all running
+agent sessions for the project:
 
 ```bash
 utlt agent stop all
 ```
 
 This stops coordinator, worker, reviewer, observer, and related agent sessions
-managed by ACV3 for the project. Task context remains saved on disk under
-`.arendi/corev3`, so the project can be opened again later.
+managed by the agent package for the project. Task context remains saved on
+disk under `.arendi/corev3`, so the project can be opened again later.
 
 ## More Commands
 

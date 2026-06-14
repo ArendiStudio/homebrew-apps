@@ -35,7 +35,7 @@ and merge state. For one-off questions, normal Codex is usually simpler.
 
 The practical loop is:
 
-1. Install the `utlt` launcher.
+1. Install `utlt`, the Arendi app launcher and package manager.
 2. Install the `agent@3-alpha` package.
 3. Initialize agent state inside a project folder.
 4. Launch the coordinator.
@@ -47,10 +47,11 @@ The practical loop is:
 
 `utlt` and `agent@3-alpha` are separate pieces. You need both.
 
-- `utlt` is not the agent. It is the launcher and package manager installed by
-  Homebrew.
+- `utlt` is not the agent. It is the Arendi app launcher and package manager.
 - `agent@3-alpha` is not the launcher. It is the agent package installed by
   `utlt`.
+- Homebrew is the install channel for `utlt` on macOS and Linux; it is not the
+  product you use day to day.
 - After both are installed, commands like `utlt agent init` use the
   `agent@3-alpha` package through the `utlt` launcher.
 
@@ -58,7 +59,7 @@ The practical loop is:
 
 If this machine does not have `utlt` yet, start with the
 [root README install guide](../../README.md#install). That guide walks through
-Homebrew, the Arendi tap, and the `utlt` launcher install.
+the Homebrew-based install path for getting `utlt` onto this machine.
 
 If this machine already has `utlt`, update the launcher:
 
@@ -66,7 +67,8 @@ If this machine already has `utlt`, update the launcher:
 utlt update utlt
 ```
 
-Next: install the [`agent@3-alpha` package below on this page](#step-2-install-the-agent3-alpha-package).
+Next: install the
+[`agent@3-alpha` package below on this page](#step-2-install-the-agent3-alpha-package).
 
 ### Step 2. Install The `agent@3-alpha` Package
 
@@ -76,7 +78,7 @@ Install the agent package:
 utlt install agent@3-alpha --install-dependencies
 ```
 
-`agent@3-alpha` is the package that adds ACV3 orchestration: the coordinator,
+`agent@3-alpha` is the package that adds agent orchestration: the coordinator,
 task board, worker sessions, reviewer sessions, evidence, and merge tracking.
 
 If you already installed `agent@3-alpha` earlier and only want to refresh it,
@@ -86,7 +88,8 @@ use:
 utlt update agent@3-alpha --install-dependencies
 ```
 
-Next: initialize [agent state inside your project below on this page](#step-3-initialize-agent-state-inside-your-project).
+Next: initialize
+[agent state inside your project below on this page](#step-3-initialize-agent-state-inside-your-project).
 
 ### Step 3. Initialize Agent State Inside Your Project
 
@@ -96,7 +99,7 @@ Move into a test project:
 cd /path/to/test-project
 ```
 
-Initialize ACV3 state for this project:
+Initialize `agent@3-alpha` for this project:
 
 ```bash
 utlt agent init
@@ -132,9 +135,9 @@ Next: launch [the coordinator below on this page](#step-4-launch-the-coordinator
 utlt agent codex
 ```
 
-The coordinator is required. It is the main UX for ACV3. Talk to it like a
-normal Codex session, but use it to create/refine tasks, route worker sessions,
-answer status questions, and merge reviewed work.
+The coordinator is required. It is the main UX for the agent package. Talk to
+it like a normal Codex session, but use it to create/refine tasks, route worker
+sessions, answer status questions, and merge reviewed work.
 
 By default, automation can run up to five worker tasks in `in_progress` and five
 reviewer tasks in `in_review` at the same time. Each task that reaches review
@@ -234,8 +237,8 @@ worktree checks that match the project.
 
 ### Stop All Agent Sessions
 
-Use this as the ACV3 kill switch when you want to close all running agent
-sessions for the project:
+Use this as the agent-session kill switch when you want to close all running
+agent sessions for the project:
 
 ```bash
 utlt agent stop all

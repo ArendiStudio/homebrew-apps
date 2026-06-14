@@ -1,11 +1,14 @@
 # Arendi package manager: utlt
 
-`utlt` is the package manager and launcher for Arendi products.
+`utlt` is the launcher and package manager for Arendi apps and products. Use it
+to install, update, and run Arendi product packages such as `agent@3-alpha`.
 
-Setup has two parts:
+`utlt` is not the agent. The agent is one package that `utlt` can install.
 
-1. Homebrew installs the `utlt` launcher.
-2. `utlt` installs Arendi packages, such as `agent@3-alpha`.
+Setup has two layers:
+
+1. Install `utlt` itself. This tap currently uses Homebrew for that step.
+2. Use `utlt` to install Arendi product packages.
 
 `utlt` and its packages are early-access proprietary software. Do not install or
 run them unless you know me or have been directly invited to test them. Use them
@@ -226,7 +229,7 @@ brew uninstall arendistudio/apps/utlt
 brew untap arendistudio/apps
 ```
 
-Uninstalling `utlt` removes the launcher installed by Homebrew. It does not
+Uninstalling `utlt` removes the launcher installed through Homebrew. It does not
 necessarily remove package state created under `utlt`-managed directories.
 
 <br>

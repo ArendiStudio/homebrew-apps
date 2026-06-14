@@ -1,6 +1,7 @@
 # agent
 
-Early-access Arendi agent package installed by `utlt`.
+Early-access Arendi agent package installed by `utlt`, the Arendi app launcher
+and package manager.
 
 ## Install
 
