@@ -19,6 +19,7 @@ Run project commands from the project root unless a step says otherwise.
 - [Watch Agents](#watch-agents)
 - [Task Lanes](#task-lanes)
 - [Workflow Policy In `lanes.toml`](#workflow-policy-in-lanestoml)
+- [Worker And Reviewer Cycle](#worker-and-reviewer-cycle)
 - [Worktrees](#worktrees)
 - [Merging](#merging)
 - [Stop Sessions](#stop-sessions)
@@ -330,6 +331,39 @@ Check whether a task can enter its next lane:
 utlt agent lanes check T-0001
 ```
 
+Default lane flow:
+
+```mermaid
+flowchart TD
+  Scheduler["worker_scheduler<br/>auto_pickup=true<br/>max_concurrent_spawns=10<br/>worker_after_handoff=park<br/>reviewer_after_review=stop<br/>task_agent_sandbox=casual"]
+  Backlog["backlog<br/>Future work<br/>auto_move=false<br/>worker_eligible=false"]
+  Todo["to_do<br/>Ready to start<br/>auto_move=true<br/>worker_eligible=false"]
+  Progress["in_progress<br/>Worker implementation<br/>auto_move=true<br/>worker_eligible=true<br/>max_concurrent_spawns=5"]
+  Review["in_review<br/>Independent review<br/>auto_move=true<br/>worker_eligible=true<br/>max_concurrent_spawns=5"]
+  MergeReady["merge_ready<br/>Ready for local merge<br/>auto_move=false<br/>worker_eligible=false"]
+  Done["done<br/>Merged locally<br/>auto_move=false"]
+  Pushed["pushed_remote<br/>Remote push recorded<br/>auto_move=false"]
+  Archived["archived<br/>Historical work"]
+
+  Scheduler -. "auto-pickup starts eligible worker/reviewer sessions" .-> Progress
+  Scheduler -. "auto-pickup starts eligible worker/reviewer sessions" .-> Review
+  Backlog -->|"clear title + description + acceptance + checklist"| Todo
+  Todo -->|"auto-move; ensure worktree + start cycle + attach worktree"| Progress
+  Progress -->|"checklist complete + evidence + clean task worktree + task branch commits + branch includes destination + primary checkout clean"| Review
+  Review -->|"review fail + cycles remain"| Progress
+  Review -->|"review passed"| MergeReady
+  MergeReady -->|"rework requested + cycles remain"| Progress
+  MergeReady -->|"local merge recorded; worktree pruned by default"| Done
+  Done -->|"remote push recorded"| Pushed
+  Backlog -. "archive" .-> Archived
+  Todo -. "archive" .-> Archived
+  Progress -. "archive; close cycle + release claim" .-> Archived
+  Review -. "archive; close cycle + release claim" .-> Archived
+  MergeReady -. "archive" .-> Archived
+  Done -. "archive" .-> Archived
+  Pushed -. "archive" .-> Archived
+```
+
 ## Workflow Policy In `lanes.toml`
 
 The lane policy file lives at:
@@ -378,6 +412,69 @@ After editing `lanes.toml`, validate it:
 ```bash
 utlt agent lanes validate
 ```
+
+## Worker And Reviewer Cycle
+
+Workers and reviewers are separate task-scoped sessions. The worker owns
+implementation and repair. The reviewer owns review. A reviewer should inspect
+the task and record a pass or fail result, not repair the task directly.
+
+Default worker/reviewer cycle:
+
+```mermaid
+flowchart TD
+  Intake["Coordinator creates or refines task<br/>title, description, acceptance, checklist"]
+  Todo["Task reaches to_do"]
+  Start["ACV3 moves task into in_progress<br/>ensure worktree + start cycle + attach worktree"]
+  Worker["Worker session claims task<br/>reads task detail and checklist"]
+  Worktree["Worker edits only the task worktree<br/>.arendi/corev3/worktrees/t-0001"]
+  Checklist["Worker completes verification items<br/>updates checklist through task tools"]
+  Evidence["Worker records durable evidence<br/>what changed + how it was verified"]
+  Commit["Worker commits on task branch<br/>example: draft/main/t-0001"]
+  Gates{"Review handoff gates pass?"}
+  ReviewLane["ACV3 closes cycle, releases claim,<br/>and moves task to in_review"]
+  Reviewer["Reviewer session inspects<br/>task detail + checklist + evidence + checkout metadata + committed diff"]
+  Decision{"Reviewer result"}
+  MergeReady["Pass: task moves to merge_ready"]
+  Retry["Fail with cycles remaining:<br/>task returns to in_progress with review feedback"]
+  Blocked["Fail with no repair path:<br/>task remains blocked or awaiting operator action"]
+  Merge["Coordinator merges reviewed work<br/>records local merge"]
+  Done["Task moves to done"]
+  Push["Remote push recorded"]
+  Pushed["Task moves to pushed_remote"]
+
+  Intake --> Todo
+  Todo --> Start
+  Start --> Worker
+  Worker --> Worktree
+  Worktree --> Checklist
+  Checklist --> Evidence
+  Evidence --> Commit
+  Commit --> Gates
+  Gates -->|"yes"| ReviewLane
+  Gates -->|"no: continue worker cycle"| Worker
+  ReviewLane --> Reviewer
+  Reviewer --> Decision
+  Decision -->|"pass"| MergeReady
+  Decision -->|"fail + cycles remain"| Retry
+  Decision -->|"fail + no retry"| Blocked
+  Retry --> Worker
+  MergeReady --> Merge
+  Merge --> Done
+  Done --> Push
+  Push --> Pushed
+```
+
+The checklist is the worker's progress contract. The worker should mark items
+done only when the matching work or verification actually happened. Evidence is
+the durable handoff note for reviewers and future operators. It should explain
+what changed, what was checked, and any remaining risk or blocker.
+
+The reviewer uses the checklist as one input, not as proof by itself. A good
+review checks the recorded evidence, the task worktree or committed diff, and
+the requested acceptance criteria. Passing review moves work toward merge.
+Failing review sends repair context back into the next worker cycle when retry
+cycles remain.
 
 ## Worktrees
 
