@@ -54,14 +54,30 @@ you want the work to survive the chat and move through a visible workflow.
 
 ## Workflow At A Glance
 
-The typical early-access workflow uses three terminal windows or panes from the
+The journey has two parts: set up the project, then operate through the
+coordinator.
+
+Setup flow:
+
+1. Install the `utlt` launcher with Homebrew.
+2. Install the `agent@3-alpha` package with `utlt`.
+3. Initialize agent state inside the project folder with `utlt agent init`.
+4. Launch the coordinator with `utlt agent codex`. This is required.
+5. Optionally open task observability with `utlt agent observe tasks`.
+6. Optionally open live agent observability with `utlt agent observe agents`.
+
+After setup, use the coordinator to capture work, create/refine tasks, route
+worker sessions, route reviewer sessions, answer status questions, and merge
+reviewed work.
+
+The typical early-access layout uses three terminal windows or panes from the
 same project root:
 
 | Window | Command | Purpose |
 | --- | --- | --- |
-| Coordinator | `utlt agent codex` | Talk to the main agent and ask it to route work. |
-| Task board | `utlt agent observe tasks` | Watch task lanes, gates, evidence, and review state. |
-| Agent observer | `utlt agent observe agents` | Watch live worker and reviewer sessions. |
+| Coordinator | `utlt agent codex` | Required. Capture work, create tasks, route workers/reviewers, and merge reviewed work. |
+| Task board | `utlt agent observe tasks` | Optional. Watch task lanes, checklists, evidence, review state, and merge readiness. |
+| Agent observer | `utlt agent observe agents` | Optional. Watch live worker and reviewer sessions. |
 
 The normal loop is:
 
@@ -243,11 +259,16 @@ Open the main coordinator from the project root in terminal 1:
 utlt agent codex
 ```
 
-Use this like a normal Codex CLI session. The coordinator can create durable
-tasks, route work to worker sessions, and send review work to reviewer sessions.
+This is the required operating surface. Use it like a normal Codex CLI session,
+but treat it as the place where work becomes durable. The coordinator can parse
+notes, action items, bug reports, or rough goals and turn them into tasks with
+titles, descriptions, acceptance criteria, checklists, lanes, claims, evidence,
+review state, and merge state.
+
 In team mode, treat the coordinator as the routing and integration surface. It
-should create or refine tasks, answer status questions, and coordinate merges;
-implementation and review should run in task-scoped worker and reviewer
+should create or refine tasks, route work to worker sessions, send review work
+to reviewer sessions, answer status questions, and coordinate merges.
+Implementation and review should run in task-scoped worker and reviewer
 sessions.
 
 Keep this terminal focused on coordinator conversation. Open
@@ -255,6 +276,10 @@ Keep this terminal focused on coordinator conversation. Open
 terminal windows or tabs so the coordinator remains available for prompts.
 
 Good coordinator prompts are specific about the outcome and constraints:
+
+```text
+Capture these action items as reviewed tasks and start the first one.
+```
 
 ```text
 Create reviewed tasks for the onboarding docs update, keep the public package
@@ -273,9 +298,10 @@ Open terminal 2 from the same project root:
 utlt agent observe tasks
 ```
 
-This opens the task board. Use it to watch [lanes](#task-lanes), task details,
-checklist state, recorded evidence, review state, and merge readiness. Use the
-arrow keys to navigate between the task index and task detail views.
+This optional observer opens the task board. Use it to watch
+[lanes](#task-lanes), task details, checklist state, recorded evidence, review
+state, and merge readiness. Use the arrow keys to navigate between the task
+index and task detail views.
 
 ## Watch Agents
 
@@ -285,10 +311,10 @@ Open terminal 3 from the same project root:
 utlt agent observe agents
 ```
 
-This shows live worker and reviewer sessions. The default scheduler can run up
-to five `in_progress` worker tasks and five `in_review` reviewer tasks at the
-same time. Each task that reaches [review](#worker-and-reviewer-cycle) gets a
-reviewer session.
+This optional observer shows live worker and reviewer sessions. The default
+scheduler can run up to five `in_progress` worker tasks and five `in_review`
+reviewer tasks at the same time. Each task that reaches
+[review](#worker-and-reviewer-cycle) gets a reviewer session.
 
 Do not type directly into worker or reviewer panes. Those panes are
 automation-owned. If you need something from a worker or reviewer, ask the

@@ -12,14 +12,16 @@ worker/reviewer handoff graph, see [onboarding-full.md](onboarding-full.md).
 ## Index
 
 - [Summary](#summary)
-- [Quick Start](#quick-start)
-  - [Fresh Install](#fresh-install)
-  - [Existing Install](#existing-install)
-  - [Project Setup](#project-setup)
-  - [Terminal 1: Coordinator](#terminal-1-coordinator)
-  - [Terminal 2: Task Board](#terminal-2-task-board)
-  - [Terminal 3: Live Agents](#terminal-3-live-agents)
-  - [QA Before Merge](#qa-before-merge)
+- [Setup Journey](#setup-journey)
+  - [Step 1. Install The `utlt` Launcher](#step-1-install-the-utlt-launcher)
+  - [Step 2. Install The `agent@3-alpha` Package](#step-2-install-the-agent3-alpha-package)
+  - [Step 3. Initialize Agent State Inside Your Project](#step-3-initialize-agent-state-inside-your-project)
+  - [Step 4. Launch The Coordinator](#step-4-launch-the-coordinator)
+  - [Step 5. Add Task Observability](#step-5-add-task-observability)
+  - [Step 6. Add Agent Observability](#step-6-add-agent-observability)
+- [Actions](#actions)
+  - [Use The Coordinator To Capture Work](#use-the-coordinator-to-capture-work)
+  - [Inspect Work Before Merge](#inspect-work-before-merge)
   - [Stop All Agent Sessions](#stop-all-agent-sessions)
 - [Quick Lane Path](#quick-lane-path)
 - [Quick Worker/Reviewer Loop](#quick-workerreviewer-loop)
@@ -33,15 +35,15 @@ and merge state. For one-off questions, normal Codex is usually simpler.
 
 The practical loop is:
 
-1. Start from a test project.
-2. Initialize ACV3 state.
-3. Open the coordinator.
-4. Watch tasks and live agents in separate terminals.
-5. Let workers edit task worktrees.
-6. Let reviewers inspect evidence and committed diffs.
-7. Merge only reviewed work.
+1. Install the `utlt` launcher.
+2. Install the `agent@3-alpha` package.
+3. Initialize agent state inside a project folder.
+4. Launch the coordinator.
+5. Optionally watch tasks and live agents in separate terminals.
+6. Use the coordinator to capture tasks and route work.
+7. Inspect reviewed work before merge.
 
-## Quick Start
+## Setup Journey
 
 `utlt` and `agent@3-alpha` are separate pieces. You need both.
 
@@ -52,31 +54,41 @@ The practical loop is:
 - After both are installed, commands like `utlt agent init` use the
   `agent@3-alpha` package through the `utlt` launcher.
 
-### Fresh Install
+### Step 1. Install The `utlt` Launcher
 
-If this machine does not have `utlt` yet, follow the
-[root README install guide](../../README.md#install). That guide installs the
-`utlt` launcher first, then uses `utlt` to install `agent@3-alpha`.
+If this machine does not have `utlt` yet, start with the
+[root README install guide](../../README.md#install). That guide walks through
+Homebrew, the Arendi tap, and the `utlt` launcher install.
 
-After that fresh install, come back here and continue with
-[Project Setup below on this page](#project-setup). You do not need the update
-commands in the next section.
-
-### Existing Install
-
-If this machine already has `utlt`, refresh the launcher first:
+If this machine already has `utlt`, update the launcher:
 
 ```bash
 utlt update utlt
 ```
 
-Then refresh and activate the agent package:
+Next: install the [`agent@3-alpha` package below on this page](#step-2-install-the-agent3-alpha-package).
+
+### Step 2. Install The `agent@3-alpha` Package
+
+Install the agent package:
+
+```bash
+utlt install agent@3-alpha --install-dependencies
+```
+
+`agent@3-alpha` is the package that adds ACV3 orchestration: the coordinator,
+task board, worker sessions, reviewer sessions, evidence, and merge tracking.
+
+If you already installed `agent@3-alpha` earlier and only want to refresh it,
+use:
 
 ```bash
 utlt update agent@3-alpha --install-dependencies
 ```
 
-### Project Setup
+Next: initialize [agent state inside your project below on this page](#step-3-initialize-agent-state-inside-your-project).
+
+### Step 3. Initialize Agent State Inside Your Project
 
 Move into a test project:
 
@@ -90,9 +102,9 @@ Initialize ACV3 state for this project:
 utlt agent init
 ```
 
-This is required before the [coordinator](#terminal-1-coordinator),
-[task board](#terminal-2-task-board), workers, and reviewers can operate in a
-project. It creates project-local state under `.arendi/corev3`:
+This is required before the [coordinator](#step-4-launch-the-coordinator),
+[task board](#step-5-add-task-observability), workers, and reviewers can
+operate in a project. It creates project-local state under `.arendi/corev3`:
 
 ```text
 .arendi/corev3/
@@ -112,48 +124,75 @@ The important part is
 worktree there, so you can inspect the actual files a worker changed before
 anything is merged.
 
-Next: open [Terminal 1: Coordinator below on this page](#terminal-1-coordinator).
+Next: launch [the coordinator below on this page](#step-4-launch-the-coordinator).
 
-### Terminal 1: Coordinator
+### Step 4. Launch The Coordinator
 
 ```bash
 utlt agent codex
 ```
 
-Use the coordinator as the main UX. Ask it to create/refine tasks, route work,
-answer status questions, and merge reviewed work. By default, automation can run
-up to five worker tasks in `in_progress` and five reviewer tasks in `in_review`
-at the same time. Each task that reaches review gets a reviewer session.
+The coordinator is required. It is the main UX for ACV3. Talk to it like a
+normal Codex session, but use it to create/refine tasks, route worker sessions,
+answer status questions, and merge reviewed work.
 
-Next: open [Terminal 2: Task Board below on this page](#terminal-2-task-board)
-in a separate terminal window or tab.
+By default, automation can run up to five worker tasks in `in_progress` and five
+reviewer tasks in `in_review` at the same time. Each task that reaches review
+gets a reviewer session.
 
-### Terminal 2: Task Board
+Next: optionally add [task observability below on this page](#step-5-add-task-observability).
+
+### Step 5. Add Task Observability
 
 ```bash
 utlt agent observe tasks
 ```
 
-Open this in a separate terminal window or tab. It shows lanes, task details,
-checklists, evidence, review status, and merge readiness.
+This is optional, but recommended. Open it in a second terminal window or tab.
+It shows lanes, task details, checklists, evidence, review status, and merge
+readiness.
 
-Next: open [Terminal 3: Live Agents below on this page](#terminal-3-live-agents)
-in another terminal window or tab.
+Next: optionally add [agent observability below on this page](#step-6-add-agent-observability).
 
-### Terminal 3: Live Agents
+### Step 6. Add Agent Observability
 
 ```bash
 utlt agent observe agents
 ```
 
-Open this in another terminal window or tab. It shows worker and reviewer panes
-while they run. Do not type into those panes; ask the coordinator to manage
-workers and reviewers.
+This is optional. Open it in a third terminal window or tab. It shows worker and
+reviewer panes while they run. Do not type into those panes; ask the
+[coordinator](#step-4-launch-the-coordinator) to manage workers and reviewers.
 
-Next: use [QA Before Merge below on this page](#qa-before-merge) before asking
-the coordinator to merge reviewed work.
+Next: use the [Actions below on this page](#actions) to capture work and inspect
+results before merge.
 
-### QA Before Merge
+## Actions
+
+### Use The Coordinator To Capture Work
+
+Use the [coordinator](#step-4-launch-the-coordinator) to turn messy intent into
+durable task state. You can paste notes, action items, bug reports, or a rough
+goal. The coordinator parses the request, asks for clarification when needed,
+and records tasks with titles, descriptions, acceptance criteria, checklists,
+lane state, claims, evidence, review state, and merge state.
+
+Good coordinator prompts:
+
+```text
+Capture these action items as reviewed tasks and start the first one.
+```
+
+```text
+Create tasks for the onboarding copy cleanup, keep the docs user-facing, and
+route each task through review.
+```
+
+```text
+Show me what is in progress, what is blocked, and what is ready to merge.
+```
+
+### Inspect Work Before Merge
 
 Before merging, inspect the task worktree. The easiest path is usually Finder
 or your Linux file manager:
@@ -189,9 +228,9 @@ git status --short
 ```
 
 Replace `t-0001` with the task worktree you want to QA. The
-[Task Board section above on this page](#terminal-2-task-board) shows which task
-is ready for review or merge. Merge only after the task has evidence, a reviewer
-pass, and worktree checks that match the project.
+[task board](#step-5-add-task-observability) shows which task is ready for
+review or merge. Merge only after the task has evidence, a reviewer pass, and
+worktree checks that match the project.
 
 ### Stop All Agent Sessions
 
