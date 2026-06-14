@@ -43,19 +43,28 @@ The practical loop is:
 
 ## Quick Start
 
-Start based on the state of this machine.
+`utlt` and `agent@3-alpha` are separate pieces. You need both.
+
+- `utlt` is not the agent. It is the launcher and package manager installed by
+  Homebrew.
+- `agent@3-alpha` is not the launcher. It is the agent package installed by
+  `utlt`.
+- After both are installed, commands like `utlt agent init` use the
+  `agent@3-alpha` package through the `utlt` launcher.
 
 ### Fresh Install
 
-If `utlt` is not installed yet, follow the
-[root README install guide](../../README.md#install). If you just installed
-`utlt` and `agent@3-alpha` from that guide, skip
-[Existing Install](#existing-install) and continue to
-[Project Setup](#project-setup).
+If this machine does not have `utlt` yet, follow the
+[root README install guide](../../README.md#install). That guide installs the
+`utlt` launcher first, then uses `utlt` to install `agent@3-alpha`.
+
+After that fresh install, come back here and continue with
+[Project Setup below on this page](#project-setup). You do not need the update
+commands in the next section.
 
 ### Existing Install
 
-Refresh the launcher first:
+If this machine already has `utlt`, refresh the launcher first:
 
 ```bash
 utlt update utlt
@@ -103,7 +112,7 @@ The important part is
 worktree there, so you can inspect the actual files a worker changed before
 anything is merged.
 
-Next: open [Terminal 1: Coordinator](#terminal-1-coordinator).
+Next: open [Terminal 1: Coordinator below on this page](#terminal-1-coordinator).
 
 ### Terminal 1: Coordinator
 
@@ -116,8 +125,8 @@ answer status questions, and merge reviewed work. By default, automation can run
 up to five worker tasks in `in_progress` and five reviewer tasks in `in_review`
 at the same time. Each task that reaches review gets a reviewer session.
 
-Next: open [Terminal 2: Task Board](#terminal-2-task-board) in a separate
-terminal window or tab.
+Next: open [Terminal 2: Task Board below on this page](#terminal-2-task-board)
+in a separate terminal window or tab.
 
 ### Terminal 2: Task Board
 
@@ -128,8 +137,8 @@ utlt agent observe tasks
 Open this in a separate terminal window or tab. It shows lanes, task details,
 checklists, evidence, review status, and merge readiness.
 
-Next: open [Terminal 3: Live Agents](#terminal-3-live-agents) in another
-terminal window or tab.
+Next: open [Terminal 3: Live Agents below on this page](#terminal-3-live-agents)
+in another terminal window or tab.
 
 ### Terminal 3: Live Agents
 
@@ -141,8 +150,8 @@ Open this in another terminal window or tab. It shows worker and reviewer panes
 while they run. Do not type into those panes; ask the coordinator to manage
 workers and reviewers.
 
-Next: use [QA Before Merge](#qa-before-merge) before asking the coordinator to
-merge reviewed work.
+Next: use [QA Before Merge below on this page](#qa-before-merge) before asking
+the coordinator to merge reviewed work.
 
 ### QA Before Merge
 
@@ -180,9 +189,9 @@ git status --short
 ```
 
 Replace `t-0001` with the task worktree you want to QA. The
-[task board](#terminal-2-task-board) shows which task is ready for review or
-merge. Merge only after the task has evidence, a reviewer pass, and worktree
-checks that match the project.
+[Task Board section above on this page](#terminal-2-task-board) shows which task
+is ready for review or merge. Merge only after the task has evidence, a reviewer
+pass, and worktree checks that match the project.
 
 ### Stop All Agent Sessions
 

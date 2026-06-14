@@ -79,6 +79,12 @@ The normal loop is:
 
 Install Homebrew first if it is not already installed.
 
+`utlt` and `agent@3-alpha` are separate installs with separate jobs. `utlt` is
+not the agent; it is the launcher and package manager installed by Homebrew.
+`agent@3-alpha` is not the launcher; it is the agent package installed by
+`utlt`. After both are installed, commands like `utlt agent init` use the
+`agent@3-alpha` package through the `utlt` launcher.
+
 ###### macOS & Linux
 
 Follow the official installer at [brew.sh](https://brew.sh/).
