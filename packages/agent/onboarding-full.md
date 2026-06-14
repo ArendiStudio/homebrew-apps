@@ -532,6 +532,20 @@ Worktrees are also the operator QA surface. Before merge, inspect the task's
 worktree, review the changed files, and run whatever project checks are
 appropriate from inside that worktree.
 
+The easiest inspection path is usually Finder or your Linux file manager:
+
+```bash
+open .arendi/corev3/worktrees
+```
+
+```bash
+xdg-open .arendi/corev3/worktrees
+```
+
+If `.arendi` is hidden, show hidden files first. In macOS Finder, press
+`Shift + Cmd + .`. In most Linux file managers, press `Ctrl + H`. Then open the
+task folder, such as `t-0001`, and inspect the changed files before merge.
+
 Show the worktree plan for a task:
 
 ```bash
@@ -558,14 +572,6 @@ git status --short
 
 Replace `T-0001` or `t-0001` with the task id shown on the task board.
 
-On macOS Finder, press:
-
-```text
-Shift + Cmd + .
-```
-
-to show hidden folders.
-
 ## Merging
 
 The coordinator handles merge routing. When tasks are ready, ask the coordinator
@@ -584,13 +590,16 @@ Merge tasks T-0001, T-0002, and T-0003 when they are ready.
 
 ## Stop Sessions
 
-Stop all UTLT agent sessions:
+Use this as the ACV3 kill switch when you want to close all running agent
+sessions for the project:
 
 ```bash
 utlt agent stop all
 ```
 
-Task context remains saved.
+This stops coordinator, worker, reviewer, observer, and related agent sessions
+managed by ACV3 for the project. Task context remains saved on disk under
+`.arendi/corev3`, so the project can be opened again later.
 
 ## More Commands
 

@@ -117,7 +117,24 @@ Open this in another terminal window or tab. It shows worker and reviewer panes
 while they run. Do not type into those panes; ask the coordinator to manage
 workers and reviewers.
 
-Before merging, inspect the task worktree and run the project checks there:
+Before merging, inspect the task worktree. The easiest path is usually Finder
+or your Linux file manager:
+
+```bash
+open .arendi/corev3/worktrees
+```
+
+```bash
+xdg-open .arendi/corev3/worktrees
+```
+
+If `.arendi` is hidden, show hidden files first. In macOS Finder, press
+`Shift + Cmd + .`. In most Linux file managers, press `Ctrl + H`.
+
+Open the task folder, such as `t-0001`, review the files the worker changed,
+and run the project checks from that task worktree before merge.
+
+Terminal path:
 
 ```bash
 ls .arendi/corev3/worktrees
@@ -135,7 +152,8 @@ Replace `t-0001` with the task worktree you want to QA. The task board shows
 which task is ready for review or merge. Merge only after the task has evidence,
 a reviewer pass, and worktree checks that match the project.
 
-Stop all agent sessions when finished:
+Use this as the ACV3 kill switch when you want to close all running agent
+sessions for the project:
 
 ```bash
 utlt agent stop all
