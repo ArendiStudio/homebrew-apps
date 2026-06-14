@@ -35,20 +35,26 @@ The practical loop is:
 
 ## Quick Start
 
-If you do not have `utlt` yet, install it first from the
-[root README install guide](../../README.md#install).
+Start based on the state of this machine.
 
-Update `utlt`:
+Fresh install: if `utlt` is not installed yet, follow the
+[root README install guide](../../README.md#install). If you just installed
+`utlt` and `agent@3-alpha` from that guide, skip the update commands below and
+continue to project setup.
+
+Existing install: refresh the launcher first:
 
 ```bash
 utlt update utlt
 ```
 
-Update and activate the agent package:
+Then refresh and activate the agent package:
 
 ```bash
 utlt update agent@3-alpha --install-dependencies
 ```
+
+Project setup:
 
 Move into a test project:
 
