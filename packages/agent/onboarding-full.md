@@ -1,4 +1,4 @@
-# UTLT Agent Full Onboarding
+# UTLT agent full onboarding
 
 This guide is for early-access operators trying `agent@3-alpha` in a test
 project. Use a repository or project folder you are comfortable letting agent
@@ -10,25 +10,25 @@ For the shorter 80/20 entry point, see [onboarding.md](onboarding.md).
 
 ## Index
 
-- [What Agent Orchestration Does](#what-agent-orchestration-does)
-- [Workflow At A Glance](#workflow-at-a-glance)
+- [What agent orchestration does](#what-agent-orchestration-does)
+- [Workflow at a glance](#workflow-at-a-glance)
 - [Install](#install)
 - [Update](#update)
-- [Start A Test Project](#start-a-test-project)
-- [Project State Under `.arendi/corev3`](#project-state-under-arendicorev3)
-- [Run The Coordinator](#run-the-coordinator)
-- [Watch Tasks](#watch-tasks)
-- [Watch Agents](#watch-agents)
-- [Task Lanes](#task-lanes)
-- [Workflow Policy In `lanes.toml`](#workflow-policy-in-lanestoml)
-- [Worker And Reviewer Cycle](#worker-and-reviewer-cycle)
+- [Start a test project](#start-a-test-project)
+- [Project state under `.arendi/corev3`](#project-state-under-arendicorev3)
+- [Run the coordinator](#run-the-coordinator)
+- [Watch tasks](#watch-tasks)
+- [Watch agents](#watch-agents)
+- [Task lanes](#task-lanes)
+- [Workflow policy in `lanes.toml`](#workflow-policy-in-lanestoml)
+- [Worker and reviewer cycle](#worker-and-reviewer-cycle)
 - [Worktrees](#worktrees)
 - [Merging](#merging)
-- [Stop Sessions](#stop-sessions)
-- [More Commands](#more-commands)
+- [Stop sessions](#stop-sessions)
+- [More commands](#more-commands)
 - [Troubleshooting](#troubleshooting)
 
-## What Agent Orchestration Does
+## What agent orchestration does
 
 `agent@3-alpha` provides agent orchestration. Use it when work should be
 tracked as durable tasks instead of handled as one long chat thread.
@@ -53,7 +53,7 @@ For quick one-off questions, a normal Codex chat may be simpler. Use
 `agent@3-alpha` when you want the work to survive the chat and move through a
 visible workflow.
 
-## Workflow At A Glance
+## Workflow at a glance
 
 The journey has two parts: set up the project, then operate through the
 coordinator.
@@ -181,7 +181,7 @@ utlt agent --version
 utlt agent version
 ```
 
-## Start A Test Project
+## Start a test project
 
 Move into a test repository or project folder:
 
@@ -212,7 +212,7 @@ local Git state so per-task worktrees can be created. It is safe to rerun
 initialization; the agent package repairs missing default workflow config
 additively instead of replacing local `lanes.toml` edits.
 
-## Project State Under `.arendi/corev3`
+## Project state under `.arendi/corev3`
 
 Agent state is project-local. Commands discover the nearest parent folder that
 contains `.arendi/corev3`, so run commands from the project root or a child
@@ -253,7 +253,7 @@ Treat `lanes.toml` and `settings.toml` as configuration. Treat `tasks/`,
 Do not hand-edit runtime records to force task progress; use the coordinator,
 task commands, or lane commands instead.
 
-## Run The Coordinator
+## Run the coordinator
 
 Open the main coordinator from the project root in terminal 1:
 
@@ -292,7 +292,7 @@ docs user-facing, and do not publish private source paths.
 Show me which tasks are blocked and what each one needs next.
 ```
 
-## Watch Tasks
+## Watch tasks
 
 Open terminal 2 from the same project root:
 
@@ -305,7 +305,7 @@ This optional observer opens the task board. Use it to watch
 state, and merge readiness. Use the arrow keys to move through tasks and press
 Enter to open task details.
 
-## Watch Agents
+## Watch agents
 
 Open terminal 3 from the same project root:
 
@@ -322,7 +322,7 @@ Do not type directly into worker or reviewer panes. Those panes are
 automation-owned. If you need something from a worker or reviewer, ask the
 coordinator to manage the sub-agent.
 
-## Task Lanes
+## Task lanes
 
 Lanes are the visible workflow states on [the task board](#watch-tasks). The
 default agent workflow is intentionally small enough to inspect while separating
@@ -424,7 +424,7 @@ scheduler has `auto_pickup = true`, caps total spawned task agents at 10, caps
 `in_progress` and `in_review` at 5 each, parks workers after review handoff,
 and stops reviewers after review.
 
-## Workflow Policy In `lanes.toml`
+## Workflow policy in `lanes.toml`
 
 The lane policy file lives at:
 
@@ -473,7 +473,7 @@ After editing `lanes.toml`, validate it:
 utlt agent lanes validate
 ```
 
-## Worker And Reviewer Cycle
+## Worker and reviewer cycle
 
 Workers and reviewers are separate task-scoped sessions. The worker owns
 implementation and repair. The reviewer owns review. A reviewer should inspect
@@ -626,7 +626,7 @@ Example prompt:
 Merge tasks T-0001, T-0002, and T-0003 when they are ready.
 ```
 
-## Stop Sessions
+## Stop sessions
 
 Use this as the agent-session kill switch when you want to close all running
 agent sessions for the project:
@@ -639,7 +639,7 @@ This stops coordinator, worker, reviewer, observer, and related agent sessions
 managed by the agent package for the project. Task context remains saved on
 disk under `.arendi/corev3`, so the project can be opened again later.
 
-## More Commands
+## More commands
 
 Show featured agent commands:
 

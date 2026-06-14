@@ -1,4 +1,4 @@
-# UTLT Agent Onboarding
+# UTLT agent onboarding
 
 This is the 80/20 guide for early-access operators trying `agent@3-alpha` in a
 test project. Use a repository or project folder you are comfortable letting
@@ -12,20 +12,20 @@ worker/reviewer handoff graph, see [onboarding-full.md](onboarding-full.md).
 ## Index
 
 - [Summary](#summary)
-- [Setup Journey](#setup-journey)
-  - [Step 1. Install The `utlt` Launcher](#step-1-install-the-utlt-launcher)
-  - [Step 2. Install The `agent@3-alpha` Package](#step-2-install-the-agent3-alpha-package)
-  - [Step 3. Initialize Agent State Inside Your Project](#step-3-initialize-agent-state-inside-your-project)
-  - [Step 4. Launch The Coordinator](#step-4-launch-the-coordinator)
-  - [Step 5. Add Task Observability](#step-5-add-task-observability)
-  - [Step 6. Add Agent Observability](#step-6-add-agent-observability)
+- [Setup journey](#setup-journey)
+  - [Step 1. Install the `utlt` launcher](#step-1-install-the-utlt-launcher)
+  - [Step 2. Install the `agent@3-alpha` package](#step-2-install-the-agent3-alpha-package)
+  - [Step 3. Initialize agent state inside your project](#step-3-initialize-agent-state-inside-your-project)
+  - [Step 4. Launch the coordinator](#step-4-launch-the-coordinator)
+  - [Step 5. Add task observability](#step-5-add-task-observability)
+  - [Step 6. Add agent observability](#step-6-add-agent-observability)
 - [Actions](#actions)
-  - [Use The Coordinator To Capture Work](#use-the-coordinator-to-capture-work)
-  - [Inspect Work Before Merge](#inspect-work-before-merge)
-  - [Stop All Agent Sessions](#stop-all-agent-sessions)
-- [Quick Lane Path](#quick-lane-path)
-- [Quick Worker/Reviewer Loop](#quick-workerreviewer-loop)
-- [Full Guide](#full-guide)
+  - [Use the coordinator to capture work](#use-the-coordinator-to-capture-work)
+  - [Inspect work before merge](#inspect-work-before-merge)
+  - [Stop all agent sessions](#stop-all-agent-sessions)
+- [Quick lane path](#quick-lane-path)
+- [Quick worker/reviewer loop](#quick-workerreviewer-loop)
+- [Full guide](#full-guide)
 
 ## Summary
 
@@ -43,7 +43,7 @@ The practical loop is:
 6. Use the coordinator to capture tasks and route work.
 7. Inspect reviewed work before merge.
 
-## Setup Journey
+## Setup journey
 
 `utlt` and `agent@3-alpha` are separate pieces. You need both.
 
@@ -55,7 +55,7 @@ The practical loop is:
 - After both are installed, commands like `utlt agent init` use the
   `agent@3-alpha` package through the `utlt` launcher.
 
-### Step 1. Install The `utlt` Launcher
+### Step 1. Install the `utlt` launcher
 
 Required if this machine does not have `utlt` yet. Start with the
 [root README install guide](../../README.md#install). That guide walks through
@@ -67,7 +67,7 @@ If this machine already has `utlt`, update the launcher:
 utlt update utlt
 ```
 
-### Step 2. Install The `agent@3-alpha` Package
+### Step 2. Install the `agent@3-alpha` package
 
 Required. This installs the package that provides the `utlt agent` commands.
 
@@ -87,7 +87,7 @@ use:
 utlt update agent@3-alpha --install-dependencies
 ```
 
-### Step 3. Initialize Agent State Inside Your Project
+### Step 3. Initialize agent state inside your project
 
 Required for each project that will use `agent@3-alpha`.
 
@@ -125,7 +125,7 @@ The important part is
 worktree there, so you can inspect the actual files a worker changed before
 anything is merged.
 
-### Step 4. Launch The Coordinator
+### Step 4. Launch the coordinator
 
 Required. The coordinator is the main session you talk to.
 
@@ -141,7 +141,7 @@ By default, automation can run up to five worker tasks in `in_progress` and five
 reviewer tasks in `in_review` at the same time. Each task that reaches review
 gets a reviewer session.
 
-### Step 5. Add Task Observability
+### Step 5. Add task observability
 
 Optional, but recommended. Open this in a second terminal window or tab.
 
@@ -153,7 +153,7 @@ It shows lanes, task details, checklists, evidence, review status, and merge
 readiness. Use the arrow keys to move through tasks and press Enter to open
 task details.
 
-### Step 6. Add Agent Observability
+### Step 6. Add agent observability
 
 Optional. Open this in a third terminal window or tab if you want to watch live
 worker and reviewer panes.
@@ -167,7 +167,7 @@ Do not type into worker or reviewer panes; ask the
 
 ## Actions
 
-### Use The Coordinator To Capture Work
+### Use the coordinator to capture work
 
 Use the [coordinator](#step-4-launch-the-coordinator) to turn messy intent into
 durable task state. You can paste notes, action items, bug reports, or a rough
@@ -190,12 +190,12 @@ route each task through review.
 Show me what is in progress, what is blocked, and what is ready to merge.
 ```
 
-### Inspect Work Before Merge
+### Inspect work before merge
 
 Before merging, inspect the task worktree. The easiest path is usually Finder
 or your Linux file manager:
 
-#### Finder Or File Manager
+#### Finder or file manager
 
 ```bash
 open .arendi/corev3/worktrees
@@ -211,7 +211,7 @@ If `.arendi` is hidden, show hidden files first. In macOS Finder, press
 Open the task folder, such as `t-0001`, review the files the worker changed,
 and run the project checks from that task worktree before merge.
 
-#### Terminal Path
+#### Terminal path
 
 ```bash
 ls .arendi/corev3/worktrees
@@ -230,7 +230,7 @@ Replace `t-0001` with the task worktree you want to QA. The
 review or merge. Merge only after the task has evidence, a reviewer pass, and
 worktree checks that match the project.
 
-### Stop All Agent Sessions
+### Stop all agent sessions
 
 Use this as the agent-session kill switch when you want to close all running
 agent sessions for the project:
@@ -239,7 +239,7 @@ agent sessions for the project:
 utlt agent stop all
 ```
 
-## Quick Lane Path
+## Quick lane path
 
 This is the outer task-board workflow. You see these lanes in
 `utlt agent observe tasks`; they describe where one task is in the delivery
@@ -264,7 +264,7 @@ flowchart TD
   Done -->|"push"| Pushed
 ```
 
-## Quick Worker/Reviewer Loop
+## Quick worker/reviewer loop
 
 This is the inner loop for a task after it reaches implementation. The
 coordinator routes work, the worker changes the task worktree, and the reviewer
@@ -287,10 +287,10 @@ flowchart TD
   Merge --> Done
 ```
 
-See [Worker And Reviewer Cycle](onboarding-full.md#worker-and-reviewer-cycle)
+See [Worker and reviewer cycle](onboarding-full.md#worker-and-reviewer-cycle)
 for the complete handoff graph.
 
-## Full Guide
+## Full guide
 
 Use [onboarding-full.md](onboarding-full.md) when you need:
 
