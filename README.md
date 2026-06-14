@@ -77,14 +77,34 @@ No action required.
 ### → Step 5. Choose which `utlt` packages you want to install
 <small>Remove `--install-dependencies` flag if you want to manage package dependencies yourself.</small>
 
-###### agent@3-alpha - Multi-agent orchestration with observable, durable task context for Codex harness. Feature frozen, bug/hot fixes only.
-
-```bash
-utlt install agent@3-alpha --install-dependencies
-```
-
-###### agent@4-alpha - Available soon for early access, starting as harness-agnostic durable task context.
-
+<table>
+  <thead>
+    <tr>
+      <th width="25%">Package</th>
+      <th width="75%">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>agent@3-alpha</code></td>
+      <td>
+        Multi-agent orchestration with observable, durable task context for
+        Codex harness. Feature frozen, bug/hot fixes only.
+        <pre><code>utlt install agent@3-alpha --install-dependencies</code></pre>
+        <a href="packages/agent/onboarding.md">Onboarding guide</a>
+      </td>
+    </tr>
+    <tr>
+      <td><code>agent@4-alpha</code></td>
+      <td>
+        Available soon for early access, starting as harness-agnostic durable
+        task context.
+        <br>
+        Onboarding guide: coming soon.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 See all versions: [agent](packages/agent/).
 
