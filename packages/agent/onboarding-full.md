@@ -172,8 +172,9 @@ utlt agent init
 ```
 
 The package install makes the agent command available. `utlt agent init`
-prepares the current project for orchestration. Run it once before starting the
-coordinator, task board, workers, or reviewers for that project.
+prepares the current project for orchestration. Run it once before starting
+[the coordinator](#run-the-coordinator), [the task board](#watch-tasks),
+workers, or reviewers for that project.
 
 It creates local runtime state under:
 
@@ -243,9 +244,9 @@ should create or refine tasks, answer status questions, and coordinate merges;
 implementation and review should run in task-scoped worker and reviewer
 sessions.
 
-Keep this terminal focused on coordinator conversation. Open the task board and
-agent observer in separate terminal windows or tabs so the coordinator remains
-available for prompts.
+Keep this terminal focused on coordinator conversation. Open
+[the task board](#watch-tasks) and [agent observer](#watch-agents) in separate
+terminal windows or tabs so the coordinator remains available for prompts.
 
 Good coordinator prompts are specific about the outcome and constraints:
 
@@ -266,9 +267,9 @@ Open terminal 2 from the same project root:
 utlt agent observe tasks
 ```
 
-This opens the task board. Use it to watch lanes, task details, checklist
-state, recorded evidence, review state, and merge readiness. Use the arrow keys
-to navigate between the task index and task detail views.
+This opens the task board. Use it to watch [lanes](#task-lanes), task details,
+checklist state, recorded evidence, review state, and merge readiness. Use the
+arrow keys to navigate between the task index and task detail views.
 
 ## Watch Agents
 
@@ -280,7 +281,8 @@ utlt agent observe agents
 
 This shows live worker and reviewer sessions. The default scheduler can run up
 to five `in_progress` worker tasks and five `in_review` reviewer tasks at the
-same time. Each task that reaches review gets a reviewer session.
+same time. Each task that reaches [review](#worker-and-reviewer-cycle) gets a
+reviewer session.
 
 Do not type directly into worker or reviewer panes. Those panes are
 automation-owned. If you need something from a worker or reviewer, ask the
@@ -288,8 +290,8 @@ coordinator to manage the sub-agent.
 
 ## Task Lanes
 
-Lanes are the visible workflow states on the task board. The default ACV3
-workflow is intentionally small enough to inspect while still separating
+Lanes are the visible workflow states on [the task board](#watch-tasks). The
+default ACV3 workflow is intentionally small enough to inspect while separating
 planning, implementation, review, merge, and remote-push state.
 
 | Lane id | Meaning |
@@ -313,8 +315,8 @@ the task to review; ACV3 moves it when the configured gates pass.
 Common gates include:
 
 - the task has a clear title, description, acceptance criteria, and checklist
-- a task worktree is attached
-- the task worktree is clean
+- a [task worktree](#worktrees) is attached
+- the [task worktree](#worktrees) is clean
 - the task branch has commits
 - evidence has been recorded
 - review passed or failed
@@ -346,9 +348,9 @@ utlt agent lanes check T-0001
 
 Default lane path:
 
-This is the outer workflow shown on the task board. It is separate from the
-worker/reviewer sessions that do the implementation and review work inside
-`in_progress` and `in_review`.
+This is the outer workflow shown on [the task board](#watch-tasks). It is
+separate from the worker/reviewer sessions that do the implementation and
+review work inside `in_progress` and `in_review`.
 
 ```mermaid
 flowchart TD
@@ -570,7 +572,8 @@ Check the task worktree status:
 git status --short
 ```
 
-Replace `T-0001` or `t-0001` with the task id shown on the task board.
+Replace `T-0001` or `t-0001` with the task id shown on
+[the task board](#watch-tasks).
 
 ## Merging
 
@@ -579,8 +582,8 @@ which tasks can be merged.
 
 Merge only work that has passed the configured review path and reached
 `merge_ready`. ACV3 records the task branch, destination branch, merge result,
-and cleanup policy so the task board can distinguish local merge state from
-remote push state.
+and cleanup policy so [the task board](#watch-tasks) can distinguish local
+merge state from remote push state.
 
 Example prompt:
 

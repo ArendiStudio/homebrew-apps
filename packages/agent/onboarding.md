@@ -13,6 +13,14 @@ worker/reviewer handoff graph, see [onboarding-full.md](onboarding-full.md).
 
 - [Summary](#summary)
 - [Quick Start](#quick-start)
+  - [Fresh Install](#fresh-install)
+  - [Existing Install](#existing-install)
+  - [Project Setup](#project-setup)
+  - [Terminal 1: Coordinator](#terminal-1-coordinator)
+  - [Terminal 2: Task Board](#terminal-2-task-board)
+  - [Terminal 3: Live Agents](#terminal-3-live-agents)
+  - [QA Before Merge](#qa-before-merge)
+  - [Stop All Agent Sessions](#stop-all-agent-sessions)
 - [Quick Lane Path](#quick-lane-path)
 - [Quick Worker/Reviewer Loop](#quick-workerreviewer-loop)
 - [Full Guide](#full-guide)
@@ -37,12 +45,17 @@ The practical loop is:
 
 Start based on the state of this machine.
 
-Fresh install: if `utlt` is not installed yet, follow the
-[root README install guide](../../README.md#install). If you just installed
-`utlt` and `agent@3-alpha` from that guide, skip the update commands below and
-continue to project setup.
+### Fresh Install
 
-Existing install: refresh the launcher first:
+If `utlt` is not installed yet, follow the
+[root README install guide](../../README.md#install). If you just installed
+`utlt` and `agent@3-alpha` from that guide, skip
+[Existing Install](#existing-install) and continue to
+[Project Setup](#project-setup).
+
+### Existing Install
+
+Refresh the launcher first:
 
 ```bash
 utlt update utlt
@@ -54,7 +67,7 @@ Then refresh and activate the agent package:
 utlt update agent@3-alpha --install-dependencies
 ```
 
-Project setup:
+### Project Setup
 
 Move into a test project:
 
@@ -68,8 +81,9 @@ Initialize ACV3 state for this project:
 utlt agent init
 ```
 
-This is required before the coordinator, task board, workers, and reviewers can
-operate in a project. It creates project-local state under `.arendi/corev3`:
+This is required before the [coordinator](#terminal-1-coordinator),
+[task board](#terminal-2-task-board), workers, and reviewers can operate in a
+project. It creates project-local state under `.arendi/corev3`:
 
 ```text
 .arendi/corev3/
@@ -84,10 +98,14 @@ operate in a project. It creates project-local state under `.arendi/corev3`:
   observe/
 ```
 
-The important part is `worktrees/`. Each task gets its own Git worktree there,
-so you can inspect the actual files a worker changed before anything is merged.
+The important part is
+[`worktrees/`](onboarding-full.md#worktrees). Each task gets its own Git
+worktree there, so you can inspect the actual files a worker changed before
+anything is merged.
 
-Terminal 1 is the coordinator:
+Next: open [Terminal 1: Coordinator](#terminal-1-coordinator).
+
+### Terminal 1: Coordinator
 
 ```bash
 utlt agent codex
@@ -98,7 +116,10 @@ answer status questions, and merge reviewed work. By default, automation can run
 up to five worker tasks in `in_progress` and five reviewer tasks in `in_review`
 at the same time. Each task that reaches review gets a reviewer session.
 
-Terminal 2 is the task board:
+Next: open [Terminal 2: Task Board](#terminal-2-task-board) in a separate
+terminal window or tab.
+
+### Terminal 2: Task Board
 
 ```bash
 utlt agent observe tasks
@@ -107,7 +128,10 @@ utlt agent observe tasks
 Open this in a separate terminal window or tab. It shows lanes, task details,
 checklists, evidence, review status, and merge readiness.
 
-Terminal 3 is the live agent observer:
+Next: open [Terminal 3: Live Agents](#terminal-3-live-agents) in another
+terminal window or tab.
+
+### Terminal 3: Live Agents
 
 ```bash
 utlt agent observe agents
@@ -117,8 +141,15 @@ Open this in another terminal window or tab. It shows worker and reviewer panes
 while they run. Do not type into those panes; ask the coordinator to manage
 workers and reviewers.
 
+Next: use [QA Before Merge](#qa-before-merge) before asking the coordinator to
+merge reviewed work.
+
+### QA Before Merge
+
 Before merging, inspect the task worktree. The easiest path is usually Finder
 or your Linux file manager:
+
+#### Finder Or File Manager
 
 ```bash
 open .arendi/corev3/worktrees
@@ -134,7 +165,7 @@ If `.arendi` is hidden, show hidden files first. In macOS Finder, press
 Open the task folder, such as `t-0001`, review the files the worker changed,
 and run the project checks from that task worktree before merge.
 
-Terminal path:
+#### Terminal Path
 
 ```bash
 ls .arendi/corev3/worktrees
@@ -148,9 +179,12 @@ cd .arendi/corev3/worktrees/t-0001
 git status --short
 ```
 
-Replace `t-0001` with the task worktree you want to QA. The task board shows
-which task is ready for review or merge. Merge only after the task has evidence,
-a reviewer pass, and worktree checks that match the project.
+Replace `t-0001` with the task worktree you want to QA. The
+[task board](#terminal-2-task-board) shows which task is ready for review or
+merge. Merge only after the task has evidence, a reviewer pass, and worktree
+checks that match the project.
+
+### Stop All Agent Sessions
 
 Use this as the ACV3 kill switch when you want to close all running agent
 sessions for the project:
