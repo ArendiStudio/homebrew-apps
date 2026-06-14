@@ -10,6 +10,25 @@ at your own risk.
 `utlt` currently publishes Homebrew artifacts for Apple Silicon macOS, Linux
 arm64, and Linux x86_64.
 
+## Index
+
+- [Install](#install)
+  - [Step 1. Install Homebrew](#step-1-install-homebrew)
+  - [Step 2. Add the apps tap](#step-2-add-the-apps-tap)
+  - [Step 3. Install `utlt`](#step-3-install-utlt)
+  - [Step 4. Clear macOS quarantine](#step-4-clear-macos-quarantine)
+  - [Step 5. Choose packages](#step-5-choose-which-utlt-packages-you-want-to-install)
+- [Upgrade](#upgrade)
+  - [Upgrade `utlt`](#upgrade-utlt)
+  - [Upgrade packages](#upgrade-packages)
+- [Reinstall](#reinstall)
+  - [Reinstall `utlt`](#reinstall-utlt)
+  - [Reinstall packages](#reinstall-packages)
+- [Uninstall](#uninstall)
+  - [Uninstall packages](#uninstall-packages)
+  - [Uninstall `utlt`](#uninstall-utlt)
+- [Legal disclaimer](#legal-disclaimer)
+
 <br>
 
 ## Install

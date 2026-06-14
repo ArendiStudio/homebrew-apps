@@ -6,6 +6,20 @@ workers modify.
 
 Run project commands from the project root unless a step says otherwise.
 
+## Index
+
+- [Install](#install)
+- [Update](#update)
+- [Start A Test Project](#start-a-test-project)
+- [Run The Coordinator](#run-the-coordinator)
+- [Watch Tasks](#watch-tasks)
+- [Watch Agents](#watch-agents)
+- [Worktrees](#worktrees)
+- [Merging](#merging)
+- [Stop Sessions](#stop-sessions)
+- [More Commands](#more-commands)
+- [Troubleshooting](#troubleshooting)
+
 ## Install
 
 Install Homebrew first if it is not already installed.
