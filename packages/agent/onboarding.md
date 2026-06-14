@@ -57,7 +57,7 @@ The practical loop is:
 
 ### Step 1. Install The `utlt` Launcher
 
-If this machine does not have `utlt` yet, start with the
+Required if this machine does not have `utlt` yet. Start with the
 [root README install guide](../../README.md#install). That guide walks through
 the Homebrew-based install path for getting `utlt` onto this machine.
 
@@ -67,10 +67,9 @@ If this machine already has `utlt`, update the launcher:
 utlt update utlt
 ```
 
-Next: install the
-[`agent@3-alpha` package below on this page](#step-2-install-the-agent3-alpha-package).
-
 ### Step 2. Install The `agent@3-alpha` Package
+
+Required. This installs the package that provides the `utlt agent` commands.
 
 Install the agent package:
 
@@ -88,10 +87,9 @@ use:
 utlt update agent@3-alpha --install-dependencies
 ```
 
-Next: initialize
-[agent state inside your project below on this page](#step-3-initialize-agent-state-inside-your-project).
-
 ### Step 3. Initialize Agent State Inside Your Project
+
+Required for each project that will use `agent@3-alpha`.
 
 Move into a test project:
 
@@ -127,48 +125,44 @@ The important part is
 worktree there, so you can inspect the actual files a worker changed before
 anything is merged.
 
-Next: launch [the coordinator below on this page](#step-4-launch-the-coordinator).
-
 ### Step 4. Launch The Coordinator
+
+Required. The coordinator is the main session you talk to.
 
 ```bash
 utlt agent codex
 ```
 
-The coordinator is required. It is the main UX for the agent package. Talk to
-it like a normal Codex session, but use it to create/refine tasks, route worker
-sessions, answer status questions, and merge reviewed work.
+Use it like a normal Codex session, but treat it as the main UX for creating
+and refining tasks, routing worker sessions, answering status questions, and
+merging reviewed work.
 
 By default, automation can run up to five worker tasks in `in_progress` and five
 reviewer tasks in `in_review` at the same time. Each task that reaches review
 gets a reviewer session.
 
-Next: optionally add [task observability below on this page](#step-5-add-task-observability).
-
 ### Step 5. Add Task Observability
+
+Optional, but recommended. Open this in a second terminal window or tab.
 
 ```bash
 utlt agent observe tasks
 ```
 
-This is optional, but recommended. Open it in a second terminal window or tab.
 It shows lanes, task details, checklists, evidence, review status, and merge
 readiness.
 
-Next: optionally add [agent observability below on this page](#step-6-add-agent-observability).
-
 ### Step 6. Add Agent Observability
+
+Optional. Open this in a third terminal window or tab if you want to watch live
+worker and reviewer panes.
 
 ```bash
 utlt agent observe agents
 ```
 
-This is optional. Open it in a third terminal window or tab. It shows worker and
-reviewer panes while they run. Do not type into those panes; ask the
+Do not type into worker or reviewer panes; ask the
 [coordinator](#step-4-launch-the-coordinator) to manage workers and reviewers.
-
-Next: use the [Actions below on this page](#actions) to capture work and inspect
-results before merge.
 
 ## Actions
 
