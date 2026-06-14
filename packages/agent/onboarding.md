@@ -35,6 +35,9 @@ The practical loop is:
 
 ## Quick Start
 
+If you do not have `utlt` yet, install it first from the
+[root README install guide](../../README.md#install).
+
 Update `utlt`:
 
 ```bash
@@ -45,16 +48,6 @@ Update and activate the agent package:
 
 ```bash
 utlt update agent@3-alpha --install-dependencies
-```
-
-Check the active agent:
-
-```bash
-utlt agent --version
-```
-
-```bash
-utlt agent version
 ```
 
 Move into a test project:
