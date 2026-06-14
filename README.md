@@ -1,7 +1,11 @@
 # Arendi package manager: utlt
 
-`utlt` is the package manager and launcher for Arendi products. Homebrew
-installs `utlt`. `utlt` installs Arendi packages.
+`utlt` is the package manager and launcher for Arendi products.
+
+Setup has two parts:
+
+1. Homebrew installs the `utlt` launcher.
+2. `utlt` installs Arendi packages, such as `agent@3-alpha`.
 
 `utlt` and its packages are early-access proprietary software. Do not install or
 run them unless you know me or have been directly invited to test them. Use them
@@ -17,7 +21,7 @@ arm64, and Linux x86_64.
   - [Step 2. Add the apps tap](#step-2-add-the-apps-tap)
   - [Step 3. Install `utlt`](#step-3-install-utlt)
   - [Step 4. Clear macOS quarantine](#step-4-clear-macos-quarantine)
-  - [Step 5. Choose packages](#step-5-choose-which-utlt-packages-you-want-to-install)
+  - [Step 5. Install a package with `utlt`](#step-5-install-a-package-with-utlt)
 - [Command reference](#command-reference)
 - [Upgrade](#upgrade)
   - [Upgrade `utlt`](#upgrade-utlt)
@@ -74,8 +78,11 @@ xattr -dr com.apple.quarantine "$(brew --prefix utlt)" 2>/dev/null || true
 
 No action required.
 
-### → Step 5. Choose which `utlt` packages you want to install
-<small>Remove `--install-dependencies` flag if you want to manage package dependencies yourself.</small>
+### → Step 5. Install a package with `utlt`
+
+Now that the `utlt` launcher is installed, use it to install the product package
+you want to try. Most users should keep `--install-dependencies`; it lets `utlt`
+check for package dependencies and install anything missing.
 
 <table>
   <thead>
@@ -88,25 +95,37 @@ No action required.
     <tr>
       <td><code>agent@3-alpha</code></td>
       <td>
-        Multi-agent orchestration with observable, durable task context for
-        Codex harness. Feature frozen, bug/hot fixes only.
+        <p>
+          Multi-agent orchestration for Codex-based project work. Use this
+          package when you want a task board, worker sessions, reviewer
+          sessions, saved evidence, and tracked merge state instead of one long
+          chat thread.
+        </p>
+        <p>Install it:</p>
         <pre><code>utlt install agent@3-alpha --install-dependencies</code></pre>
-        <a href="packages/agent/onboarding.md">Onboarding guide</a>
+        <p>
+          Then continue to the
+          <a href="packages/agent/onboarding.md">agent onboarding guide</a>.
+        </p>
       </td>
     </tr>
     <tr>
       <td><code>agent@4-alpha</code></td>
       <td>
-        Available soon for early access, starting as harness-agnostic durable
-        task context.
-        <br>
-        Onboarding guide: coming soon.
+        <p>
+          Available soon for early access, starting as harness-agnostic durable
+          task context.
+        </p>
+        <p>No install command yet. Onboarding guide: coming soon.</p>
       </td>
     </tr>
   </tbody>
 </table>
 
-See all versions: [agent](packages/agent/).
+If you already manage package dependencies yourself, remove
+`--install-dependencies` from package install and update commands.
+
+See all agent versions: [agent](packages/agent/).
 
 <br>
 
