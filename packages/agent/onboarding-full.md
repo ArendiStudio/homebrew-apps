@@ -302,8 +302,8 @@ utlt agent observe tasks
 
 This optional observer opens the task board. Use it to watch
 [lanes](#task-lanes), task details, checklist state, recorded evidence, review
-state, and merge readiness. Use the arrow keys to navigate between the task
-index and task detail views.
+state, and merge readiness. Use the arrow keys to move through tasks and press
+Enter to open task details.
 
 ## Watch Agents
 

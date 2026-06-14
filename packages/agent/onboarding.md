@@ -150,7 +150,8 @@ utlt agent observe tasks
 ```
 
 It shows lanes, task details, checklists, evidence, review status, and merge
-readiness.
+readiness. Use the arrow keys to move through tasks and press Enter to open
+task details.
 
 ### Step 6. Add Agent Observability
 
