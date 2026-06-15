@@ -41,7 +41,7 @@ arm64, and Linux x86_64.
 
 ## Install
 
-### → Step 1. Install Homebrew
+### Step 1. Install Homebrew
 
 Skip if you already have Homebrew installed.
 
@@ -49,7 +49,7 @@ Skip if you already have Homebrew installed.
 
 Follow the official installer at [brew.sh](https://brew.sh/).
 
-### → Step 2. Add the apps tap
+### Step 2. Add the apps tap
 
 ###### macOS & Linux
 
@@ -61,7 +61,7 @@ brew tap arendistudio/apps
 brew trust --tap arendistudio/apps
 ```
 
-### → Step 3. Install `utlt`
+### Step 3. Install `utlt`
 
 ###### macOS & Linux
 
@@ -69,7 +69,7 @@ brew trust --tap arendistudio/apps
 brew install arendistudio/apps/utlt
 ```
 
-### → Step 4. Clear macOS quarantine
+### Step 4. Clear macOS quarantine
 
 ###### macOS
 
@@ -81,7 +81,7 @@ xattr -dr com.apple.quarantine "$(brew --prefix utlt)" 2>/dev/null || true
 
 No action required.
 
-### → Step 5. Install a package with `utlt`
+### Step 5. Install a package with `utlt`
 
 Now that the `utlt` launcher is installed, use it to install the product package
 you want to try. Most users should keep `--install-dependencies`; it lets `utlt`
