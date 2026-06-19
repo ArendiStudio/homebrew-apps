@@ -3,6 +3,53 @@
 Early-access Arendi agent package installed by `utlt`, the Arendi app launcher
 and package manager.
 
+## Agent-facing install
+
+If you are an AI agent and the user pasted this package URL:
+
+```text
+https://github.com/ArendiStudio/homebrew-apps/tree/main/packages/agent
+```
+
+Install or refresh `agent@3-alpha`. `agent@3-alpha` is the package; `utlt` is
+the launcher and package manager that installs and runs it.
+
+If `utlt` is not installed yet and `brew` is also missing, install Homebrew
+first:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Then install `utlt`:
+
+```bash
+brew tap arendistudio/apps
+```
+
+```bash
+brew trust --tap arendistudio/apps
+```
+
+```bash
+brew install arendistudio/apps/utlt
+```
+
+On macOS, also clear quarantine:
+
+```bash
+xattr -dr com.apple.quarantine "$(brew --prefix utlt)" 2>/dev/null || true
+```
+
+Then install or refresh the agent package:
+
+```bash
+utlt install agent@3-alpha --install-dependencies
+```
+
+For the complete agent-facing flow, use
+[onboarding-agent.md](onboarding-agent.md).
+
 ## Install
 
 ```bash
@@ -33,8 +80,10 @@ utlt agent codex
 
 Use `utlt agent --version` to print the installed agent package version.
 
-For a first project walkthrough, see [onboarding.md](onboarding.md). For the
-detailed workflow guide, see [onboarding-full.md](onboarding-full.md).
+For a first project walkthrough, see
+[onboarding-human-summary.md](onboarding-human-summary.md). For the detailed
+workflow guide, see [onboarding-human-full.md](onboarding-human-full.md).
+For AI-agent instructions, see [onboarding-agent.md](onboarding-agent.md).
 
 ## Uninstall
 
