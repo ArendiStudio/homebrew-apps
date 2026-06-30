@@ -105,6 +105,18 @@ utlt uninstall agent
   <tbody>
     <tr>
       <td><code>agent@3-alpha</code></td>
+      <td><code>3.1.52-alpha</code></td>
+      <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
+      <td>
+        <ul>
+          <li><code>fix:</code> reduce synchronous task monitor worktree refresh cost while keeping all lanes visible.</li>
+          <li><code>fix:</code> accept dogfood QA and human-review lane criteria.</li>
+          <li><code>feat:</code> expose wrapped-agent failure diagnosis as lane policy instead of hardcoded coordinator state.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><code>agent@3-alpha</code></td>
       <td><code>3.1.51-alpha</code></td>
       <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
       <td>
