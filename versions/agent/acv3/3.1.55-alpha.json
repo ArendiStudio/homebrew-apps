@@ -1,0 +1,67 @@
+{
+  "manifest_version": 1,
+  "product": "agent",
+  "line": "acv3",
+  "channel": "alpha",
+  "version": "3.1.55-alpha",
+  "build_id": "3.1.55-alpha",
+  "dependencies": [
+    {
+      "id": "git",
+      "manager": "homebrew",
+      "kind": "formula",
+      "name": "git",
+      "required": true
+    },
+    {
+      "id": "tmux",
+      "manager": "homebrew",
+      "kind": "formula",
+      "name": "tmux",
+      "required": true
+    },
+    {
+      "id": "codex",
+      "manager": "homebrew",
+      "kind": "cask",
+      "name": "codex",
+      "required": true,
+      "post_install_note": "Run codex once to sign in if needed."
+    }
+  ],
+  "platforms": [
+    {
+      "platform": "aarch64-apple-darwin",
+      "artifact_url": "../../../artifacts/agent/acv3/3.1.55-alpha/aarch64-apple-darwin/agent-acv3-3.1.55-alpha-aarch64-apple-darwin.tar.gz",
+      "artifact_sha256": "709e472763186f427a935684ca18975652753e800c545a549a2a709fb3b2df29",
+      "artifact_size": 1446627,
+      "entrypoint": "bin/acv3"
+    }
+  ],
+  "rollback_target": null,
+  "revoked": false,
+  "verification": {
+    "status": "artifact-audited",
+    "receipts": [
+      {
+        "type": "artifact-audit",
+        "status": "passed",
+        "denylist": [
+          ".git",
+          ".arendi",
+          "src",
+          "crates",
+          "agent-self-docs",
+          "docs",
+          "*.rs",
+          "*.ts",
+          "*.map",
+          "*.dSYM",
+          "*.pdb",
+          "Cargo.toml",
+          "Cargo.lock"
+        ]
+      }
+    ]
+  }
+}
