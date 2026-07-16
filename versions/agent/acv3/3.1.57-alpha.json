@@ -1,0 +1,91 @@
+{
+  "manifest_version": 1,
+  "product": "agent",
+  "line": "acv3",
+  "channel": "alpha",
+  "version": "3.1.57-alpha",
+  "build_id": "v0.0.1d-hotfix.57",
+  "source_tag": "v0.0.1d-hotfix.57",
+  "dependencies": [
+    {
+      "id": "git",
+      "manager": "homebrew",
+      "kind": "formula",
+      "name": "git",
+      "required": true
+    },
+    {
+      "id": "tmux",
+      "manager": "homebrew",
+      "kind": "formula",
+      "name": "tmux",
+      "required": true
+    },
+    {
+      "id": "codex",
+      "manager": "homebrew",
+      "kind": "cask",
+      "name": "codex",
+      "required": true,
+      "post_install_note": "Run codex once to sign in if needed."
+    }
+  ],
+  "platforms": [
+    {
+      "platform": "aarch64-apple-darwin",
+      "artifact_url": "../../../artifacts/agent/acv3/3.1.57-alpha/aarch64-apple-darwin/agent-acv3-3.1.57-alpha-aarch64-apple-darwin.tar.gz",
+      "artifact_sha256": "6035044ea7bd7fa3850cc8c965b652101d546581357f04f0d195f3b11e3e3982",
+      "artifact_size": 1668187,
+      "entrypoint": "v0.0.1d-hotfix-57/bin/acv3"
+    },
+    {
+      "platform": "aarch64-unknown-linux-gnu",
+      "artifact_url": "../../../artifacts/agent/acv3/3.1.57-alpha/aarch64-unknown-linux-gnu/agent-acv3-3.1.57-alpha-aarch64-unknown-linux-gnu.tar.gz",
+      "artifact_sha256": "953213e4b8d72cae46f0c180712b2ca9f344d9c44a7b2deb296babf00d95e042",
+      "artifact_size": 1551107,
+      "entrypoint": "v0.0.1d-hotfix-57/bin/acv3"
+    },
+    {
+      "platform": "x86_64-unknown-linux-gnu",
+      "artifact_url": "../../../artifacts/agent/acv3/3.1.57-alpha/x86_64-unknown-linux-gnu/agent-acv3-3.1.57-alpha-x86_64-unknown-linux-gnu.tar.gz",
+      "artifact_sha256": "e47509b4ead4619bdbb28e5e8287b23c193a96a319c92f192ed73a808ee0839d",
+      "artifact_size": 1679864,
+      "entrypoint": "v0.0.1d-hotfix-57/bin/acv3"
+    }
+  ],
+  "rollback_target": null,
+  "revoked": false,
+  "verification": {
+    "status": "binary-and-artifact-verified",
+    "receipts": [
+      {
+        "type": "binary-identity",
+        "reference_platform": "aarch64-apple-darwin",
+        "binary_sha256": "9202a28697108263b513803174d2b9c52e21b60e6d197d2f9a289aa369c29839",
+        "reference_artifact_sha256": "9202a28697108263b513803174d2b9c52e21b60e6d197d2f9a289aa369c29839",
+        "runtime_version": "v0.0.1d-hotfix.57",
+        "build_version": "v0.0.1d-hotfix.57",
+        "binary_hotfix": "v0.0.1d-hotfix.57"
+      },
+      {
+        "type": "artifact-audit",
+        "status": "passed",
+        "denylist": [
+          ".git",
+          ".arendi",
+          "src",
+          "crates",
+          "agent-self-docs",
+          "docs",
+          "*.rs",
+          "*.ts",
+          "*.map",
+          "*.dSYM",
+          "*.pdb",
+          "Cargo.toml",
+          "Cargo.lock"
+        ]
+      }
+    ]
+  }
+}
