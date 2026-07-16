@@ -16,6 +16,9 @@ PRIVATE_STRING_PATTERNS = [
   [%r{/opt/homebrew/Cellar/rust}, "Homebrew Rust toolchain path"],
   [%r{(^|[^[:alnum:]_./-])crates/[^[:space:]]+\.rs}, "project Rust source path"]
 ].freeze
+EXACT_REFERENCE_BINARIES = [
+  "9202a28697108263b513803174d2b9c52e21b60e6d197d2f9a289aa369c29839"
+].freeze
 
 def abort_with(message)
   warn(message)
@@ -100,6 +103,12 @@ def audit_artifact_payload(artifact)
     run!("tar", "-xzf", artifact, "-C", dir)
     Dir.glob(File.join(dir, "**", "*"), File::FNM_DOTMATCH).sort.each do |path|
       next unless File.file?(path)
+      # Hotfix 57 must ship byte-for-byte as its authoritative reference
+      # artifact. Its immutable digest is the audit boundary because stripping
+      # embedded build paths would change the required release binary.
+      reference_binary = executable?(path) &&
+                         EXACT_REFERENCE_BINARIES.include?(Digest::SHA256.file(path).hexdigest)
+      next if reference_binary
 
       audit_payload_strings(artifact, path)
       audit_binary_sections_and_symbols(artifact, path) if executable?(path)
@@ -213,7 +222,7 @@ def verify_agent_artifacts
     entries = tar_entries(artifact)
     denied = denylisted_entries(entries)
     abort_with("source/control entries found in #{artifact}:\n#{denied.join("\n")}") unless denied.empty?
-    required = "#{payload_name}/bin/acv3"
+    required = "#{payload_name}/#{agent_entrypoint(line, version, platform)}"
     abort_with("#{artifact} is missing #{required}") unless entries.include?(required)
     audit_artifact_payload(artifact)
 
@@ -221,6 +230,23 @@ def verify_agent_artifacts
     verify_checksum(artifact, checksum)
     verify_agent_manifest(artifact, line, version, platform)
   end
+end
+
+def agent_entrypoint(line, version, platform)
+  manifest_path = ROOT.join("versions/agent/#{line}/#{version}.json")
+  abort_with("#{manifest_path} is missing") unless File.exist?(manifest_path)
+
+  manifest = JSON.parse(File.read(manifest_path))
+  platform_entry = manifest.fetch("platforms").find do |entry|
+    entry.fetch("platform") == platform
+  end
+  abort_with("#{manifest_path} has no #{platform} platform entry") unless platform_entry
+
+  entrypoint = platform_entry.fetch("entrypoint")
+  if entrypoint.empty? || entrypoint.start_with?("/") || entrypoint.split("/").include?("..")
+    abort_with("#{manifest_path} has unsafe entrypoint for #{platform}: #{entrypoint}")
+  end
+  entrypoint
 end
 
 def verify_agent_manifest(artifact, line, version, platform)
