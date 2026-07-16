@@ -105,6 +105,18 @@ utlt uninstall agent
   <tbody>
     <tr>
       <td><code>agent@3-alpha</code></td>
+      <td><code>3.1.57-alpha</code></td>
+      <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
+      <td>
+        <ul>
+          <li><code>feat:</code> expose the ACV5 task and delivery backend through <code>utlt agent codex --tasks acv5</code>.</li>
+          <li><code>fix:</code> package exact ACV3 Hotfix 57 while preserving native ACV3 as the default when <code>--tasks</code> is omitted.</li>
+          <li><code>feat:</code> install generated shell completions with UTLT 0.1.9.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><code>agent@3-alpha</code></td>
       <td><code>3.1.55-alpha</code></td>
       <td><code>utlt install agent@3-alpha --install-dependencies</code></td>
       <td>
